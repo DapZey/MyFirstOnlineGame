@@ -1,11 +1,83 @@
-CMakeLists.txt.user
+# Compiled object files
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.dll
+*.so
+*.dylib
+
+# Compiled static libraries
+*.lib
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.pdb
+*.ilk
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Other C++ specific ignores
+*.lo
+*.la
+*.al
+*.libs
+*.dll.a
+*.lib.a
+
+# CMake generated files
+CMakeFiles/
 CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
 cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps
+Makefile
+
+# Windows specific ignores
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.bak
+*.tmp
+*.log
+
+# Raylib specific ignores
+raylib/build/
+raylib/bin/
+raylib/lib/
+
+# VS Code specific ignores
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Other IDEs and editors
+*.DS_Store
+
+# Backup files
+*.bak
+*.old
+*.orig
+*.save
+*.swp
+*.swo
+*.swn
+*.tmp
+
+# Generated documentation
+doc/
+docs/
+
+# Build directories
+/build/

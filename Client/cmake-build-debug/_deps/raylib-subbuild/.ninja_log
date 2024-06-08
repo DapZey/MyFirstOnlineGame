@@ -1,0 +1,21 @@
+# ninja log v5
+1	50	7379273347904551	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-mkdir	e2e8c5ddefd25e39
+51	12638	7379273473790023	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-download	5e56c1a8e81ada1b
+1	50	7379273347904551	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-mkdir	e2e8c5ddefd25e39
+12683	12727	7379273474675530	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-patch	1dcd30c9544f6429
+12683	12727	7379273474675530	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-patch	1dcd30c9544f6429
+51	12638	7379273473790023	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-download	5e56c1a8e81ada1b
+12639	12683	7379273474233769	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-update	8040fd26d5862fb8
+12639	12683	7379273474233769	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-update	8040fd26d5862fb8
+12727	12767	7379273475080678	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-configure	d0d0025509a0808f
+12727	12767	7379273475080678	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-configure	d0d0025509a0808f
+12767	12804	7379273475452220	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-build	8708d1b725d8e21c
+12767	12804	7379273475452220	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-build	8708d1b725d8e21c
+12804	12842	7379273475829762	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-install	8bcbf4a9681fc96c
+12804	12842	7379273475829762	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-install	8bcbf4a9681fc96c
+12842	12882	7379273476230447	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-test	e146965563126753
+12842	12882	7379273476230447	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-test	e146965563126753
+12882	12940	7379273476813243	CMakeFiles/raylib-populate-complete	20cc949b733f70
+12882	12940	7379273476813243	raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-done	20cc949b733f70
+12882	12940	7379273476813243	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/CMakeFiles/raylib-populate-complete	20cc949b733f70
+12882	12940	7379273476813243	C:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-subbuild/raylib-populate-prefix/src/raylib-populate-stamp/raylib-populate-done	20cc949b733f70
