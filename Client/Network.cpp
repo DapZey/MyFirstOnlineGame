@@ -5,7 +5,14 @@
 #include "Network.h"
 #include <iostream>
 #include <vector>
-
+void Network::receiveRTT() {
+    if (buffer[0] =='&') {
+        int sendResult = sendto(output, "&", 2,0, (sockaddr*)&serverMessage, sizeof(serverMessage));
+        if (sendResult == SOCKET_ERROR) {
+            std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
+        }
+    }
+}
 std::string Network::receiveData() {
     int bytesReceived = recvfrom(output, buffer, sizeof(buffer), 0, (sockaddr*)&serverResponse, &serverResponseSize);
     if (bytesReceived == SOCKET_ERROR) {

@@ -51,6 +51,9 @@ int main(int argc, char* argv[]) {
                  updateFreq = time.count();
                  std::cout<< time.count()<<"/n";
              }
+             else if(coords[0] == '&'){
+                 network.receiveRTT();
+             }
              std::vector<std::string> player2coords = Utils::splitstringbychar(coords, ",");
              if (player2coords.size() > 1){
                  gameWindow.newPlayerx = std::stoi(player2coords[0]);

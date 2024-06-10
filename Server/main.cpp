@@ -12,8 +12,12 @@ struct Client {
     sockaddr_in address;
     int addressLength = sizeof(address);
     char buffer[20]; // Separate buffer for each client
-    int x;
-    int rttFromServer;
+    int x = 0;
+    int y = 0;
+    std::chrono::time_point<std::chrono::steady_clock> lastSendRecvTimeGeneral = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> lastSendRecvTimeRTT = std::chrono::steady_clock::now();
+    std::chrono::time_point<std::chrono::steady_clock> RTTGap = std::chrono::steady_clock::now();
+    int updateFreq = 0;
 };
 std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
     std::vector<std::string> result;
@@ -94,9 +98,11 @@ int main() {
 
     // Start the thread to listen for the stop command
     std::thread stopCommandThread(listenForStopCommand, std::ref(running));
-
     while (running) {
         for (int i = 0; i < 2; ++i) {
+            auto now = std::chrono::steady_clock::now();
+            auto elapsedGeneral = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].lastSendRecvTimeGeneral);
+            auto elapsedRTT = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].lastSendRecvTimeRTT);
             int bytes = recvfrom(clients[i].socket, clients[i].buffer, sizeof(clients[i].buffer), 0, (sockaddr*)&clients[i].address, &clients[i].addressLength);
             if (bytes == SOCKET_ERROR) {
                 int error = WSAGetLastError();
@@ -116,9 +122,26 @@ int main() {
                 if (sendResult == SOCKET_ERROR) {
                     std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
                 }
+            } else if (clients[i].buffer[0] =='&'){
+                auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].RTTGap);
+                clients[i].updateFreq = time.count();
             }
             else {
-                int sendResult = sendto(clients[otherClientIndex].socket, clients[i].buffer, bytes, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
+                std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
+                clients[i].x = std::stoi(coordinates[0]);
+                clients[i].y = std::stoi(coordinates[1]);
+                if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
+                    std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
+                    int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
+                    if (sendResult == SOCKET_ERROR) {
+                        std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
+                    }
+                }
+            }
+            if (elapsedRTT.count() >= 10000) {
+                clients[i].lastSendRecvTimeRTT = now;
+                clients[i].RTTGap = now;
+                int sendResult = sendto(clients[i].socket, "&", 2, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
                 if (sendResult == SOCKET_ERROR) {
                     std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
                 }

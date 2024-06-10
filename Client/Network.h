@@ -27,6 +27,7 @@ public:
     void sendCoordinates(int x, int y);
     std::string receiveData();
     void sendRTT();
+    void receiveRTT();
 };
 
 
