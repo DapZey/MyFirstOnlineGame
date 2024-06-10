@@ -15,3 +15,5 @@ On the client project raylib and winsock have some conflicts which can be solved
 1) implement average response time so that frequency of messages isnt only dependant on past response time
 
 2) move player based on vector (+1,-1) etc. instead of coordinates to have a consistant buffer size
+
+3) add a "world environment" class to the server file and get started on the actual game loop
