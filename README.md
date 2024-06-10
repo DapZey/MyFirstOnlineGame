@@ -10,7 +10,7 @@ Please note:
 
 On the client project raylib and winsock have some conflicts which can be solved by refactoring the raylib header file
 
-#TODOS
+# TODOS
 
 1) implement average response time so that frequency of messages isnt only dependant on past response time
 
