@@ -27,6 +27,10 @@ int main(int argc, char* argv[]) {
     std::chrono::time_point<std::chrono::steady_clock> lastSendRecvTimeRTT = std::chrono::steady_clock::now();
     std::chrono::time_point<std::chrono::steady_clock> RTTGap = std::chrono::steady_clock::now();
     int updateFreq = 0;
+    int rttCount = 0;
+    int currentRTT = 0;
+    int averageRTT = 0;
+    long long totalRTT = 0;
     while (!WindowShouldClose()) {
          if (foundConnection ==0){
             foundConnection = connectionPage.ShowPage();
@@ -48,8 +52,12 @@ int main(int argc, char* argv[]) {
              std::string coords = network.receiveData();
              if (coords[0] == '%'){
                  auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - RTTGap);
-                 updateFreq = time.count();
-                 std::cout<< time.count()<<"/n";
+                 currentRTT = time.count();
+                 rttCount++;
+                 totalRTT += currentRTT;
+                 averageRTT = (int)(totalRTT / rttCount);
+                 updateFreq = (int)(0.9 * currentRTT + 0.1 * averageRTT);
+                 std::cout << updateFreq << "\n";
              }
              else if(coords[0] == '&'){
                  network.receiveRTT();

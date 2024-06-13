@@ -18,6 +18,10 @@ struct Client {
     std::chrono::time_point<std::chrono::steady_clock> lastSendRecvTimeRTT = std::chrono::steady_clock::now();
     std::chrono::time_point<std::chrono::steady_clock> RTTGap = std::chrono::steady_clock::now();
     int updateFreq = 0;
+    int rttCount = 0;
+    int currentRTT = 0;
+    int averageRTT = 0;
+    long long totalRTT = 0;
 };
 std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
     std::vector<std::string> result;
@@ -124,7 +128,13 @@ int main() {
                 }
             } else if (clients[i].buffer[0] =='&'){
                 auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].RTTGap);
-                clients[i].updateFreq = time.count();
+//                clients[i].updateFreq = time.count();
+                clients[i].currentRTT = time.count();
+                clients[i].rttCount++;
+                clients[i].totalRTT += clients[i].currentRTT;
+                clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
+                clients[i].updateFreq = (int)(0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT);
+                std::cout << clients[i].updateFreq << "\n";
             }
             else {
                 std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
@@ -151,7 +161,7 @@ int main() {
             char clientIP[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &clients[i].address.sin_addr, clientIP, INET_ADDRSTRLEN);
             unsigned short clientPort = ntohs(clients[i].address.sin_port);
-            std::cout << "Received data from " << clientIP << ":" << clientPort << ": " << clients[i].buffer << "\n";
+//            std::cout << "Received data from " << clientIP << ":" << clientPort << ": " << clients[i].buffer << "\n";
         }
     }
     stopCommandThread.join();
