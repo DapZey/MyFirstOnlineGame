@@ -16,7 +16,7 @@ Please note:
 
 On the client project raylib and winsock have some conflicts which can be solved by refactoring the raylib header file
 
-#Run Guide
+# Run Guide
 
 Stuff is still a bit buggy if you dont run in a proper order:
 
