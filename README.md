@@ -14,7 +14,7 @@ https://www.youtube.com/watch?v=uIanSvWou1M&t=1156s
 Please note:
 
 
-On the client project raylib and winsock have some conflicts which can be solved by refactoring the raylib header file
+On the client project raylib and winsock have some conflicts which can be solved by refactoring some of the methods the raylib header file
 
 # Run Guide
 
@@ -29,6 +29,8 @@ Stuff is still a bit buggy if you dont run in a proper order:
 4) in the second client: 127.0.0.1/2/b
 
 5) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
+
+   *note* To experiment with different PC's simultaniously make sure port forwarding is enabled and firewall is configured properly
 
 # TODOS
 
