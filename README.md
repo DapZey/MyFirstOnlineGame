@@ -16,6 +16,20 @@ Please note:
 
 On the client project raylib and winsock have some conflicts which can be solved by refactoring the raylib header file
 
+#Run Guide
+
+Stuff is still a bit buggy if you dont run in a proper order:
+
+1) Run the server file
+
+2) Run the client file twice
+
+3) in the first client (assuming server is on localhost) connect by typing in the textarea: 127.0.0.1/1/a
+
+4) in the second client: 127.0.0.1/2/b
+
+5) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
+
 # TODOS
 
 1) implement average response time so that frequency of messages isnt only dependant on past response time *DONE*
