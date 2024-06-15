@@ -32,6 +32,8 @@ Stuff is still a bit buggy if you dont run in a proper order:
 
    *note* To experiment with different PC's simultaniously make sure port forwarding is enabled and firewall is configured properly
 
+   Typically to do this you go -> control panel -> firewall -> advanced and then on both inbound and outbound: -> new rule -> port -> udp -> ports 50000-50001
+
 # TODOS
 
 1) implement average response time so that frequency of messages isnt only dependant on past response time *DONE*
