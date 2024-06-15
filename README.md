@@ -49,3 +49,5 @@ Stuff is still a bit buggy if you dont run in a proper order:
 4) add a "world environment" class to the server file and get started on the actual game loop
 
 5) Handle logic of server removing a disconnected client while maintaining user vector size
+
+6) movement smoothing/interpolation
