@@ -34,6 +34,10 @@ Stuff is still a bit buggy if you dont run in a proper order:
 
    Typically to do this you go -> control panel -> firewall -> advanced and then on both inbound and outbound: -> new rule -> port -> udp -> ports 50000-50001
 
+   TODO:
+
+   learn and utilize windows firewall api to handle creating/enabling automatically
+
 # TODOS
 
 1) implement average response time so that frequency of messages isnt only dependant on past response time *DONE*
