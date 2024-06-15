@@ -47,3 +47,5 @@ Stuff is still a bit buggy if you dont run in a proper order:
 3) (maybe) experiment with a player count larger with two by utilizing fd_sets and/or multiple sockets on the same port
 
 4) add a "world environment" class to the server file and get started on the actual game loop
+
+5) Handle logic of server removing a disconnected client while maintaining user vector size
