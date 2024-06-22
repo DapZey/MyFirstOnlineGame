@@ -102,16 +102,16 @@ void GameWindow::processInput() {
     for (auto input : inputBuffer) {
         switch (input) {
             case MOVE_LEFT:
-                x -= 1;
+                x -= MOVEMENT_SPEED;
                 break;
             case MOVE_RIGHT:
-                x += 1;
+                x += MOVEMENT_SPEED;
                 break;
             case MOVE_UP:
-                y -= 1;
+                y -= MOVEMENT_SPEED;
                 break;
             case MOVE_DOWN:
-                y += 1;
+                y += MOVEMENT_SPEED;
                 break;
             case NONE:
                 break;
