@@ -6,13 +6,24 @@
 #define CLIENT_GAMEWINDOW_H
 
 #include <string>
+#include <chrono>
+#include "raylib.h"
 class GameWindow {
+    std::chrono::time_point<std::chrono::steady_clock> gameTime = std::chrono::steady_clock::now();
+    int tickCount = 0;
     int width = 50;
     int height = 50;
     std::string username = "";
+    bool pass = false;
+    bool start = false;
+    std::chrono::time_point<std::chrono::steady_clock> testTime;
+    void processInput();
+    void updateGameLogic();
+    void captureInput();
 public:
     int newPlayerx = 0;
     int newPlayerY = 0;
+    Vector2 playerPos = {0,0};
     int x = 0;
     int y = 0;
     void setUsername(std::string x);
