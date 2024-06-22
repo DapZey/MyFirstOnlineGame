@@ -24,8 +24,9 @@ public:
     int newPlayerx = 0;
     int newPlayerY = 0;
     Vector2 playerPos = {0,0};
-    int x = 0;
-    int y = 0;
+    Vector2 direction = {0,0};
+    float x = 0;
+    float y = 0;
     void setUsername(std::string x);
     void runGame();
 };

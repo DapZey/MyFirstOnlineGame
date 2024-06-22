@@ -98,27 +98,50 @@ void GameWindow::captureInput() {
 
 
 void GameWindow::processInput() {
-    Vector2 movementDirection = {0,0};
+    Vector2 movementDirection = {0.0,0.0};
+    float dt = 0.016;
     for (auto input : inputBuffer) {
         switch (input) {
             case MOVE_LEFT:
-                x -= MOVEMENT_SPEED;
+                movementDirection.x -= 1;
+//                x -= MOVEMENT_SPEED;
                 break;
             case MOVE_RIGHT:
-                x += MOVEMENT_SPEED;
+                movementDirection.x += 1;
+//                x += MOVEMENT_SPEED;
                 break;
             case MOVE_UP:
-                y -= MOVEMENT_SPEED;
+                movementDirection.y -= 1;
+//                y -= MOVEMENT_SPEED;
                 break;
             case MOVE_DOWN:
-                y += MOVEMENT_SPEED;
+                movementDirection.y += 1;
+//                y += MOVEMENT_SPEED;
                 break;
             case NONE:
                 break;
         }
     }
     inputBuffer.clear();
-
+    //normalize for diags speed
+    movementDirection = Utils::normalize(movementDirection);
+    //smooth changes in direction for diagonals
+    float lerpFactor = accelerationFactor * dt;
+    if (direction.x != 0 && direction.y != 0 &&
+        (movementDirection.x == 0 || movementDirection.y == 0)) {
+        lerpFactor *= diagonalFactor;
+    }
+    if (movementDirection.x != 0 || movementDirection.y != 0) {
+        direction = Utils::Vector2Lerp(direction, movementDirection, lerpFactor);
+    } else {
+        direction = Utils::Vector2Lerp(direction, {0, 0}, lerpFactor);
+    }
+    x += direction.x * MOVEMENT_SPEED;
+    y += direction.y * MOVEMENT_SPEED;
+    //
+    if (Utils::Vector2Distance(direction, movementDirection) < lerpThreshold) {
+        direction = movementDirection; // If the difference is small, set directly
+    }
 }
 
 void GameWindow::updateGameLogic() {
