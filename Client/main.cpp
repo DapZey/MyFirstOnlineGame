@@ -64,9 +64,7 @@ int main(int argc, char* argv[]) {
                  network.receiveRTT();
                  if (player2coords.size() > 1) {
                      gameWindow.x = std::stoi(Utils::splitstringbychar(player2coords[0], "&")[1]);
-                     std::cout<<gameWindow.x<<"\n";
                      gameWindow.y = std::stoi(player2coords[1]);
-                     std::cout<<gameWindow.y<<"/n";
                  }
              }
              else if (player2coords.size() > 1){
