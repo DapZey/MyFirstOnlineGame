@@ -20,7 +20,9 @@ class GameWindow {
     void processInput();
     void updateGameLogic();
     void captureInput();
+    Camera2D playerFollowCamera = {0};
 public:
+    GameWindow();
     int newPlayerx = 0;
     int newPlayerY = 0;
     Vector2 playerPos = {0,0};

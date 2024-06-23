@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     const int screenHeight = 600;
 
     InitWindow(screenWidth, screenHeight, "Player Class Example");
-    SetTargetFPS(1000);
+    SetTargetFPS(2000);
     ConnectWindow connectionPage(screenWidth);
     int foundConnection = 0;
     Network network;

@@ -11,6 +11,12 @@
 #define MOVEMENT_SPEED 10
 
 // Define an enum for input actions
+GameWindow::GameWindow() {
+    playerFollowCamera.target={float(800)/ 2,float (600) / 2};
+    playerFollowCamera.offset = (Vector2){ float(800)/ 2, float (600) / 2 };
+    playerFollowCamera.rotation = 0.0f;
+    playerFollowCamera.zoom = 1.0f;
+}
 enum InputAction {
     MOVE_LEFT,
     MOVE_RIGHT,
@@ -57,9 +63,14 @@ void GameWindow::runGame() {
     // Render the game
     BeginDrawing();
     ClearBackground(RAYWHITE);
+    BeginMode2D(playerFollowCamera);
     DrawRectangle(x, y, width, height, RED);
     DrawRectangle(newPlayerx, newPlayerY, width, height, RED);
+    RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
+    RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);
+    RaylibDrawText(TextFormat("Pos X: %f", x), 10, 70, 20, LIGHTGRAY);
     EndDrawing();
+    EndMode2D();
 }
 
 void GameWindow::captureInput() {
@@ -141,6 +152,10 @@ void GameWindow::processInput() {
     //
     if (Utils::Vector2Distance(direction, movementDirection) < lerpThreshold) {
         direction = movementDirection; // If the difference is small, set directly
+    }
+    playerFollowCamera.target = Utils::Vector2Lerp(playerFollowCamera.target, {x,y}, 10 *dt);
+    if (Utils::Vector2Distance(playerFollowCamera.target, {x,y}) < 0.2) {
+        playerFollowCamera.target = {x,y};
     }
 //    std::cout<<std::round(direction.x)<<","<<std::round(direction.y)<<"\n";
 }
