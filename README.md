@@ -14,7 +14,7 @@ https://www.youtube.com/watch?v=uIanSvWou1M&t=1156s
 Please note:
 
 
-On the client project raylib and winsock have some conflicts which can be solved by refactoring some of the methods the raylib header file (closewindow -> raylibclosewindow. drawtext-> raylibdrawtext. Rectangle -> raylibrectangle. 
+On the client project raylib and winsock have some conflicts which can be solved by refactoring some of the methods the raylib header file (closewindow -> raylibclosewindow. drawtext-> raylibdrawtext. Rectangle -> raylibrectangle. showcursor -> raylibshowcursor. drawtextex-> raylibdrawtext. loadimage -> raylibloadimage. playsound -> raylibplaysound)
 
 # Run Guide
 
