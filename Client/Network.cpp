@@ -5,19 +5,21 @@
 #include "Network.h"
 #include <iostream>
 #include <vector>
-void Network::receiveRTT() {
+#include "cmath"
+int Network::receiveRTT() {
     if (buffer[0] =='&') {
         int sendResult = sendto(output, "&", 2,0, (sockaddr*)&serverMessage, sizeof(serverMessage));
         if (sendResult == SOCKET_ERROR) {
             std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
         }
     }
+    return 0;
 }
 std::string Network::receiveData() {
     int bytesReceived = recvfrom(output, buffer, sizeof(buffer), 0, (sockaddr*)&serverResponse, &serverResponseSize);
     if (bytesReceived == SOCKET_ERROR) {
         if (WSAGetLastError() != WSAEWOULDBLOCK) {
-            std::cerr << "recvfrom() failed: " << WSAGetLastError() << "\n";
+//            std::cerr << "recvfrom() failed: " << WSAGetLastError() << "\n";
             return "";
         }
     } else {
@@ -27,9 +29,11 @@ std::string Network::receiveData() {
     return "";
 }
 
-void Network::sendCoordinates(int x, int y) {
-    s = std::to_string(x) + "," + std::to_string(y);
-    if (s != old) {
+void Network::sendCoordinates(float x, float y) {
+    int xDir = std::round(x);
+    int yDir = std::round(y);
+    s = std::to_string(xDir) + "," + std::to_string(yDir);
+    if (xDir != 0 || yDir != 0) {
         old = s;
         int message = sendto(output, s.c_str(), static_cast<int>(s.size()) + 1, 0, (sockaddr*)&serverMessage, sizeof(serverMessage));
         if (message == SOCKET_ERROR) {

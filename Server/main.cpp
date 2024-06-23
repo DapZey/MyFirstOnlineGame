@@ -138,8 +138,8 @@ int main() {
             }
             else {
                 std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
-                clients[i].x = std::stoi(coordinates[0]);
-                clients[i].y = std::stoi(coordinates[1]);
+                clients[i].x += std::stoi(coordinates[0]);
+                clients[i].y += std::stoi(coordinates[1]);
                 if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
                     std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
                     int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
@@ -151,10 +151,12 @@ int main() {
             if (elapsedRTT.count() >= 10000) {
                 clients[i].lastSendRecvTimeRTT = now;
                 clients[i].RTTGap = now;
-                int sendResult = sendto(clients[i].socket, "&", 2, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
+                std::string s ="&"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
+                int sendResult = sendto(clients[i].socket, s.c_str(), s.size()+1, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
                 if (sendResult == SOCKET_ERROR) {
                     std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
                 }
+                std::cout<<i<<" coordinates: \nx: "<<clients[i].x<<"\ny: "<<clients[i].y<<"\n";
             }
 
             // Log the received message

@@ -24,10 +24,10 @@ public:
     int init(std::string ip, int port);
     int startup();
     int createSocket();
-    void sendCoordinates(int x, int y);
+    void sendCoordinates(float x, float y);
     std::string receiveData();
     void sendRTT();
-    void receiveRTT();
+    int receiveRTT();
 };
 
 

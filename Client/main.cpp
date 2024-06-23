@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
              auto elapsedRTT = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastSendRecvTimeRTT);
              if (elapsedGeneral.count() >= updateFreq + 1) {
                  lastSendRecvTimeGeneral = now;
-                 network.sendCoordinates(gameWindow.x,gameWindow.y);
+                 network.sendCoordinates(gameWindow.direction.x,gameWindow.direction.y);
              }
              if (elapsedRTT.count() >= 10000) {
                  lastSendRecvTimeRTT = now;
@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
                  network.sendRTT();
              }
              std::string coords = network.receiveData();
+             std::vector<std::string> player2coords = Utils::splitstringbychar(coords, ",");
              if (coords[0] == '%'){
                  auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - RTTGap);
                  currentRTT = time.count();
@@ -61,9 +62,14 @@ int main(int argc, char* argv[]) {
              }
              else if(coords[0] == '&'){
                  network.receiveRTT();
+                 if (player2coords.size() > 1) {
+                     gameWindow.x = std::stoi(Utils::splitstringbychar(player2coords[0], "&")[1]);
+                     std::cout<<gameWindow.x<<"\n";
+                     gameWindow.y = std::stoi(player2coords[1]);
+                     std::cout<<gameWindow.y<<"/n";
+                 }
              }
-             std::vector<std::string> player2coords = Utils::splitstringbychar(coords, ",");
-             if (player2coords.size() > 1){
+             else if (player2coords.size() > 1){
                  gameWindow.newPlayerx = std::stoi(player2coords[0]);
                  gameWindow.newPlayerY = std::stoi(player2coords[1]);
              }

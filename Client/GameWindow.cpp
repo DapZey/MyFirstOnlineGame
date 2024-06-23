@@ -142,6 +142,7 @@ void GameWindow::processInput() {
     if (Utils::Vector2Distance(direction, movementDirection) < lerpThreshold) {
         direction = movementDirection; // If the difference is small, set directly
     }
+//    std::cout<<std::round(direction.x)<<","<<std::round(direction.y)<<"\n";
 }
 
 void GameWindow::updateGameLogic() {
