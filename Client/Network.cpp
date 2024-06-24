@@ -33,7 +33,7 @@ void Network::sendCoordinates(float x, float y) {
     int xDir = std::round(x);
     int yDir = std::round(y);
     s = std::to_string(xDir) + "," + std::to_string(yDir);
-    if (xDir != 0 || yDir != 0) {
+    if (old != s) {
         old = s;
         int message = sendto(output, s.c_str(), static_cast<int>(s.size()) + 1, 0, (sockaddr*)&serverMessage, sizeof(serverMessage));
         if (message == SOCKET_ERROR) {
@@ -77,10 +77,10 @@ int Network::init(std::string ip, int port){
         serverMessage.sin_port = htons(54000);
     }
     else if (port == 2) {
-            serverMessage.sin_port = htons(54001);
+        serverMessage.sin_port = htons(54001);
     }else {
-            return 1;
-        }
+        return 1;
+    }
 
     if (inet_pton(AF_INET, ip.c_str(), &serverMessage.sin_addr) != 1) {
         std::cerr << "Invalid address. inet_pton failed\n";
