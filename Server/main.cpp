@@ -138,8 +138,8 @@ int main() {
             }
             else {
                 std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
-                clients[i].x += std::stoi(coordinates[0]);
-                clients[i].y += std::stoi(coordinates[1]);
+                clients[i].x = std::stoi(coordinates[0]);
+                clients[i].y = std::stoi(coordinates[1]);
                 if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
                     std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
                     int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
