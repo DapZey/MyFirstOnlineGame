@@ -6,7 +6,7 @@
 #include <thread>
 #include <atomic>
 #include <vector>
-
+#include "Utils.h"
 struct Client {
     SOCKET socket;
     sockaddr_in address;
@@ -102,6 +102,7 @@ int main() {
 
     // Start the thread to listen for the stop command
     std::thread stopCommandThread(listenForStopCommand, std::ref(running));
+    bool waiting = false;
     while (running) {
         for (int i = 0; i < 2; ++i) {
             auto now = std::chrono::steady_clock::now();
@@ -135,20 +136,31 @@ int main() {
                 clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
                 clients[i].updateFreq = (int)(0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT);
                 std::cout << clients[i].updateFreq << "\n";
+                waiting = false;
             }
             else {
                 std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
-                clients[i].x = std::stoi(coordinates[0]);
-                clients[i].y = std::stoi(coordinates[1]);
-                if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
-                    std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
-                    int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
-                    if (sendResult == SOCKET_ERROR) {
-                        std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
+                Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
+                Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 50){
+                    std::cout<<"big correction"<<"\n";
+                    std::cout<< "x correction from "<<coords.x<<" to "<< currentClientCoords.x<<"\n";
+                    std::cout<< "y correction from "<<coords.y<<" to "<< currentClientCoords.y<<"\n";
+                }
+                else {
+                    clients[i].x = std::stoi(coordinates[0]);
+                    clients[i].y = std::stoi(coordinates[1]);
+                    if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
+                        std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
+                        int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
+                        if (sendResult == SOCKET_ERROR) {
+                            std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
+                        }
                     }
                 }
             }
-            if (elapsedRTT.count() >= 10000) {
+            if (elapsedRTT.count() >= 1000 && waiting == false) {
+                waiting = true;
                 clients[i].lastSendRecvTimeRTT = now;
                 clients[i].RTTGap = now;
                 std::string s ="&"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
