@@ -89,6 +89,14 @@ build CMakeFiles/Client.dir/GameWindow.cpp.obj: CXX_COMPILER__Client_unscanned_D
   OBJECT_DIR = CMakeFiles\Client.dir
   OBJECT_FILE_DIR = CMakeFiles\Client.dir
 
+build CMakeFiles/Client.dir/World.cpp.obj: CXX_COMPILER__Client_unscanned_Debug C$:/Users/benra/CLionProjects/UDPTest/Client/World.cpp || cmake_object_order_depends_target_Client
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\Client.dir\World.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-src/src -IC:/Users/benra/CLionProjects/UDPTest/Client/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\Client.dir
+  OBJECT_FILE_DIR = CMakeFiles\Client.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Client
@@ -97,7 +105,7 @@ build CMakeFiles/Client.dir/GameWindow.cpp.obj: CXX_COMPILER__Client_unscanned_D
 #############################################
 # Link the executable Client.exe
 
-build Client.exe: CXX_EXECUTABLE_LINKER__Client_Debug CMakeFiles/Client.dir/main.cpp.obj CMakeFiles/Client.dir/ConnectWindow.cpp.obj CMakeFiles/Client.dir/Utils.cpp.obj CMakeFiles/Client.dir/Network.cpp.obj CMakeFiles/Client.dir/GameWindow.cpp.obj | _deps/raylib-build/raylib/libraylib.a _deps/raylib-build/raylib/external/glfw/src/libglfw3.a || _deps/raylib-build/raylib/external/glfw/src/libglfw3.a _deps/raylib-build/raylib/libraylib.a
+build Client.exe: CXX_EXECUTABLE_LINKER__Client_Debug CMakeFiles/Client.dir/main.cpp.obj CMakeFiles/Client.dir/ConnectWindow.cpp.obj CMakeFiles/Client.dir/Utils.cpp.obj CMakeFiles/Client.dir/Network.cpp.obj CMakeFiles/Client.dir/GameWindow.cpp.obj CMakeFiles/Client.dir/World.cpp.obj | _deps/raylib-build/raylib/libraylib.a _deps/raylib-build/raylib/external/glfw/src/libglfw3.a || _deps/raylib-build/raylib/external/glfw/src/libglfw3.a _deps/raylib-build/raylib/libraylib.a
   FLAGS = -g
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lws2_32  _deps/raylib-build/raylib/libraylib.a  -lopengl32  -lglu32  -lwinmm  _deps/raylib-build/raylib/external/glfw/src/libglfw3.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

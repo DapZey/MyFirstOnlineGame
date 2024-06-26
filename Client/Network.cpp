@@ -12,6 +12,7 @@ int Network::receiveRTT() {
         if (sendResult == SOCKET_ERROR) {
             std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
         }
+
     }
     return 0;
 }

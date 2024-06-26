@@ -12,7 +12,9 @@ add_executable(Client main.cpp
         Network.cpp
         Network.h
         GameWindow.cpp
-        GameWindow.h)
+        GameWindow.h
+        World.cpp
+        World.h)
 set(WINSOCK_LIBRARIES ws2_32)
 
 # Link against Winsock

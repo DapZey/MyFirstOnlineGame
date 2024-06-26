@@ -112,15 +112,12 @@ int main() {
             if (bytes == SOCKET_ERROR) {
                 int error = WSAGetLastError();
                 if (error == WSAEWOULDBLOCK || error == WSAEMSGSIZE) {
-                    // Ignore non-fatal errors
                     continue;
                 } else {
                     std::cerr << "recvfrom failed with error: " << error << "\n";
                     continue;
                 }
             }
-
-            // Send the received message to the other client
             int otherClientIndex = (i == 0) ? 1 : 0;
             if (clients[i].buffer[0] =='%') {
                 int sendResult = sendto(clients[i].socket, clients[i].buffer, bytes, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
@@ -170,12 +167,9 @@ int main() {
                 }
                 std::cout<<i<<" coordinates: \nx: "<<clients[i].x<<"\ny: "<<clients[i].y<<"\n";
             }
-
-            // Log the received message
             char clientIP[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &clients[i].address.sin_addr, clientIP, INET_ADDRSTRLEN);
             unsigned short clientPort = ntohs(clients[i].address.sin_port);
-//            std::cout << "Received data from " << clientIP << ":" << clientPort << ": " << clients[i].buffer << "\n";
         }
     }
     stopCommandThread.join();

@@ -8,6 +8,7 @@
 #include <string>
 #include <chrono>
 #include "raylib.h"
+#include "World.h"
 class GameWindow {
     std::chrono::time_point<std::chrono::steady_clock> gameTime = std::chrono::steady_clock::now();
     int tickCount = 0;
@@ -22,6 +23,7 @@ class GameWindow {
     void captureInput();
     Camera2D playerFollowCamera = {0};
 public:
+    World world;
     GameWindow();
     int newPlayerx = 0;
     int newPlayerY = 0;

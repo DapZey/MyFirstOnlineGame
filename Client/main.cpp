@@ -13,11 +13,11 @@
 
 
 int main(int argc, char* argv[]) {
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int screenWidth = 1280;
+    const int screenHeight = 960;
 
     InitWindow(screenWidth, screenHeight, "Player Class Example");
-    SetTargetFPS(2000);
+    SetTargetFPS(1000);
     ConnectWindow connectionPage(screenWidth);
     int foundConnection = 0;
     Network network;
@@ -63,8 +63,20 @@ int main(int argc, char* argv[]) {
             else if(coords[0] == '&'){
                 network.receiveRTT();
                 if (player2coords.size() > 1) {
-                    gameWindow.x = std::stoi(Utils::splitstringbychar(player2coords[0], "&")[1]);
-                    gameWindow.y = std::stoi(player2coords[1]);
+                    if (!gameWindow.world.checkCollisionGeneral({std::stof(Utils::splitstringbychar(player2coords[0], "&")[1]),gameWindow.y},50)){
+                        gameWindow.x = std::stoi(Utils::splitstringbychar(player2coords[0], "&")[1]);
+                        std::cout<<"compensated x"<<"\n";
+                    }
+                    else {
+                        std::cout<<"failed compensation on x"<<"\n";
+                    }
+                    if (!gameWindow.world.checkCollisionGeneral({gameWindow.x,std::stof(player2coords[1])},50)){
+                        gameWindow.y = std::stoi(player2coords[1]);
+                        std::cout<<"compensated y"<<"\n";
+                    }
+                            else {
+                        std::cout<<"failed compensation on y"<<"\n";
+                    }
                 }
             }
             else if (player2coords.size() > 1){

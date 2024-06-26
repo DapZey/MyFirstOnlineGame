@@ -12,10 +12,11 @@
 
 // Define an enum for input actions
 GameWindow::GameWindow() {
-    playerFollowCamera.target={float(800)/ 2,float (600) / 2};
-    playerFollowCamera.offset = (Vector2){ float(800)/ 2, float (600) / 2 };
+    playerFollowCamera.target={float(1280)/ 2,float (960) / 2};
+    playerFollowCamera.offset = (Vector2){ float(1280)/ 2, float (1680) / 2 };
     playerFollowCamera.rotation = 0.0f;
     playerFollowCamera.zoom = 1.0f;
+
 }
 enum InputAction {
     MOVE_LEFT,
@@ -35,6 +36,9 @@ struct TimedInput {
 
 void GameWindow::setUsername(std::string x) {
     this->username = x;
+    if (username == "a"){
+        playerFollowCamera.rotation = 180.0f;
+    }
 }
 
 // Global input buffer
@@ -64,11 +68,12 @@ void GameWindow::runGame() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode2D(playerFollowCamera);
-    DrawRectangle(x, y, width, height, RED);
-    DrawRectangle(newPlayerx, newPlayerY, width, height, RED);
+    DrawCircle(x, y, width, RED);
+    DrawCircle(newPlayerx, newPlayerY, width, RED);
     RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("Pos X: %f", x), 10, 70, 20, LIGHTGRAY);
+    world.draw();
     EndDrawing();
     EndMode2D();
 }
@@ -94,23 +99,23 @@ void GameWindow::captureInput() {
     }
     // Add other global inputs here
     if (Utils::IsKeyPressedGlobal(VK_UP) && username == "a") {
-        inputBuffer.insert(MOVE_UP);
-    }
-    if (Utils::IsKeyPressedGlobal(VK_LEFT) && username == "a") {
-        inputBuffer.insert(MOVE_LEFT);
-    }
-    if (Utils::IsKeyPressedGlobal(VK_DOWN) && username == "a") {
         inputBuffer.insert(MOVE_DOWN);
     }
-    if (Utils::IsKeyPressedGlobal(VK_RIGHT) && username == "a") {
+    if (Utils::IsKeyPressedGlobal(VK_LEFT) && username == "a") {
         inputBuffer.insert(MOVE_RIGHT);
+    }
+    if (Utils::IsKeyPressedGlobal(VK_DOWN) && username == "a") {
+        inputBuffer.insert(MOVE_UP);
+    }
+    if (Utils::IsKeyPressedGlobal(VK_RIGHT) && username == "a") {
+        inputBuffer.insert(MOVE_LEFT);
     }
 }
 
 
 void GameWindow::processInput() {
     Vector2 movementDirection = {0.0,0.0};
-    float dt = 0.016;
+    float gameTickrate = 0.016;
     for (auto input : inputBuffer) {
         switch (input) {
             case MOVE_LEFT:
@@ -137,7 +142,7 @@ void GameWindow::processInput() {
     //normalize for diags speed
     movementDirection = Utils::normalize(movementDirection);
     //smooth changes in direction for diagonals
-    float lerpFactor = accelerationFactor * dt;
+    float lerpFactor = accelerationFactor * gameTickrate;
     if (direction.x != 0 && direction.y != 0 &&
         (movementDirection.x == 0 || movementDirection.y == 0)) {
         lerpFactor *= diagonalFactor;
@@ -147,21 +152,19 @@ void GameWindow::processInput() {
     } else {
         direction = Utils::Vector2Lerp(direction, {0, 0}, lerpFactor);
     }
-    x += direction.x * MOVEMENT_SPEED;
-    y += direction.y * MOVEMENT_SPEED;
-    //
+    Vector2 pos = world.findCollision({x,y},{x + direction.x * MOVEMENT_SPEED, y + direction.y * MOVEMENT_SPEED},50);
+x = pos.x;
+y = pos.y;
     if (Utils::Vector2Distance(direction, movementDirection) < lerpThreshold) {
         direction = movementDirection; // If the difference is small, set directly
     }
-    playerFollowCamera.target = Utils::Vector2Lerp(playerFollowCamera.target, {x,y}, 10 *dt);
+    playerFollowCamera.target = Utils::Vector2Lerp(playerFollowCamera.target, {x,y}, 10 * gameTickrate);
     if (Utils::Vector2Distance(playerFollowCamera.target, {x,y}) < 0.2) {
         playerFollowCamera.target = {x,y};
     }
-//    std::cout<<std::round(direction.x)<<","<<std::round(direction.y)<<"\n";
 }
 
 void GameWindow::updateGameLogic() {
-    // Example game logic update, you can add more logic here
     if (x > 1500 && pass == false) {
         pass = true;
         auto currentFrameTime = std::chrono::steady_clock::now();
