@@ -30,7 +30,7 @@ int ConnectWindow::ShowPage() {
             }
             key = GetCharPressed();  // Check next character in the queue
         }
-        if (IsKeyPressed(KEY_BACKSPACE))
+        if (IsKeyDown(KEY_BACKSPACE))
         {
             letterCount--;
             if (letterCount < 0) letterCount = 0;
@@ -38,20 +38,13 @@ int ConnectWindow::ShowPage() {
         }
     }
     else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-    //----------------------------------------------------------------------------------
-
-    // Draw
-    //----------------------------------------------------------------------------------
     BeginDrawing();
-
     ClearBackground(RAYWHITE);
     RaylibDrawText("Type:{ip}/{port}/{username} in the textbox and press enter", screenWidth/8.0, 140, 20, GRAY);
     DrawRectangleRec(textBox, LIGHTGRAY);
     if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
     else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
-
     RaylibDrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
-
     RaylibDrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, MAX_INPUT_CHARS), 315, 250, 20, DARKGRAY);
     EndDrawing();
     if (IsKeyPressed(KEY_ENTER)){

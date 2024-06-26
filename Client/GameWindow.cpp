@@ -8,15 +8,19 @@
 #include <unordered_set>
 
 #define TICK_RATE_MS 16
-#define MOVEMENT_SPEED 10
+#define MOVEMENT_SPEED 13
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 960
+#define PLAYER_OFFSET 700
+#define RADIUS 30
+#define CAMERA_LERP_RATE 10
 
 // Define an enum for input actions
 GameWindow::GameWindow() {
-    playerFollowCamera.target={float(1280)/ 2,float (960) / 2};
-    playerFollowCamera.offset = (Vector2){ float(1280)/ 2, float (1680) / 2 };
+    playerFollowCamera.target={float(SCREEN_WIDTH)/ 2,float (SCREEN_HEIGHT) / 2};
+    playerFollowCamera.offset = (Vector2){ float(SCREEN_WIDTH)/ 2, float (SCREEN_HEIGHT + PLAYER_OFFSET) / 2 };
     playerFollowCamera.rotation = 0.0f;
     playerFollowCamera.zoom = 1.0f;
-
 }
 enum InputAction {
     MOVE_LEFT,
@@ -28,7 +32,6 @@ enum InputAction {
 const float lerpThreshold = 0.2f;
 const float accelerationFactor = 40.0f;
 const float diagonalFactor = 0.5f;
-// Define a struct to store input actions with their timestamps
 struct TimedInput {
     InputAction action;
     std::chrono::time_point<std::chrono::steady_clock> timestamp;
@@ -68,8 +71,8 @@ void GameWindow::runGame() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode2D(playerFollowCamera);
-    DrawCircle(x, y, width, RED);
-    DrawCircle(newPlayerx, newPlayerY, width, RED);
+    DrawCircle(x, y, RADIUS, RED);
+    DrawCircle(newPlayerx, newPlayerY, RADIUS, RED);
     RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("Pos X: %f", x), 10, 70, 20, LIGHTGRAY);
@@ -112,10 +115,9 @@ void GameWindow::captureInput() {
     }
 }
 
-
+const float gameTickrate = 0.016;
 void GameWindow::processInput() {
     Vector2 movementDirection = {0.0,0.0};
-    float gameTickrate = 0.016;
     for (auto input : inputBuffer) {
         switch (input) {
             case MOVE_LEFT:
@@ -152,14 +154,14 @@ void GameWindow::processInput() {
     } else {
         direction = Utils::Vector2Lerp(direction, {0, 0}, lerpFactor);
     }
-    Vector2 pos = world.findCollision({x,y},{x + direction.x * MOVEMENT_SPEED, y + direction.y * MOVEMENT_SPEED},50);
+    Vector2 pos = world.findCollision({x,y},{x + direction.x * MOVEMENT_SPEED, y + direction.y * MOVEMENT_SPEED},RADIUS);
 x = pos.x;
 y = pos.y;
     if (Utils::Vector2Distance(direction, movementDirection) < lerpThreshold) {
         direction = movementDirection; // If the difference is small, set directly
     }
-    playerFollowCamera.target = Utils::Vector2Lerp(playerFollowCamera.target, {x,y}, 10 * gameTickrate);
-    if (Utils::Vector2Distance(playerFollowCamera.target, {x,y}) < 0.2) {
+    playerFollowCamera.target = Utils::Vector2Lerp(playerFollowCamera.target, {x,y}, CAMERA_LERP_RATE * gameTickrate);
+    if (Utils::Vector2Distance(playerFollowCamera.target, {x,y}) < lerpThreshold) {
         playerFollowCamera.target = {x,y};
     }
 }
