@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
     float oldX = 0;
     float oldY = 0;
     std::string data;
+    bool needToRespond = false;
     while (!WindowShouldClose()) {
         if (foundConnection ==0){
             foundConnection = connectionPage.ShowPage();
@@ -51,7 +52,7 @@ int main(int argc, char* argv[]) {
                 std::cout<<data<<"\n";
             }
             if (Utils::containsChar(data,'&')){
-                stringToSend += responseToRtt;
+                needToRespond = true;
             }
             if (Utils::containsChar(data,'%')){
                 auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - RTTGap);
@@ -71,6 +72,10 @@ int main(int argc, char* argv[]) {
             std::string coordinates = "*"+std::to_string((int)gameWindow.x) + "," + std::to_string((int)gameWindow.y);
             if (oldX != gameWindow.x || oldY != gameWindow.y){
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {
+                    if (needToRespond == true){
+                        stringToSend += responseToRtt;
+                        needToRespond = false;
+                    }
                     stringToSend += coordinates;
                     lastSendRecvTimeGeneral = now;
                 } else {
