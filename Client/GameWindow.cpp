@@ -14,6 +14,7 @@
 #define PLAYER_OFFSET 700
 #define RADIUS 30
 #define CAMERA_LERP_RATE 10
+#define BALL_RADIUS 15
 
 // Define an enum for input actions
 GameWindow::GameWindow() {
@@ -37,10 +38,14 @@ struct TimedInput {
     std::chrono::time_point<std::chrono::steady_clock> timestamp;
 };
 
-void GameWindow::setUsername(std::string x) {
-    this->username = x;
+void GameWindow::setUsername(std::string text) {
+    this->username = text;
     if (username == "a"){
         playerFollowCamera.rotation = 180.0f;
+        x = 100;
+        y = 200;
+        newPlayerY = 660;
+        newPlayerx = 220;
     }
 }
 
@@ -73,6 +78,7 @@ void GameWindow::runGame() {
     BeginMode2D(playerFollowCamera);
     DrawCircle(x, y, RADIUS, RED);
     DrawCircle(newPlayerx, newPlayerY, RADIUS, RED);
+    DrawCircle(ballX, ballY, BALL_RADIUS, BLUE);
     RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("Pos X: %f", x), 10, 70, 20, LIGHTGRAY);

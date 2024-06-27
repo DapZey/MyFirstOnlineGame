@@ -61,6 +61,12 @@ build CMakeFiles/Server.dir/Utils.cpp.obj: CXX_COMPILER__Server_unscanned_Debug 
   OBJECT_DIR = CMakeFiles\Server.dir
   OBJECT_FILE_DIR = CMakeFiles\Server.dir
 
+build CMakeFiles/Server.dir/World.cpp.obj: CXX_COMPILER__Server_unscanned_Debug C$:/Users/benra/CLionProjects/UDPTest/Server/World.cpp || cmake_object_order_depends_target_Server
+  DEP_FILE = CMakeFiles\Server.dir\World.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Server.dir
+  OBJECT_FILE_DIR = CMakeFiles\Server.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Server
@@ -69,7 +75,7 @@ build CMakeFiles/Server.dir/Utils.cpp.obj: CXX_COMPILER__Server_unscanned_Debug 
 #############################################
 # Link the executable Server.exe
 
-build Server.exe: CXX_EXECUTABLE_LINKER__Server_Debug CMakeFiles/Server.dir/main.cpp.obj CMakeFiles/Server.dir/Utils.cpp.obj
+build Server.exe: CXX_EXECUTABLE_LINKER__Server_Debug CMakeFiles/Server.dir/main.cpp.obj CMakeFiles/Server.dir/Utils.cpp.obj CMakeFiles/Server.dir/World.cpp.obj
   FLAGS = -g
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lws2_32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

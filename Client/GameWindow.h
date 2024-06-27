@@ -25,12 +25,14 @@ class GameWindow {
 public:
     World world;
     GameWindow();
-    int newPlayerx = 0;
-    int newPlayerY = 0;
+    int newPlayerx = 100;
+    int newPlayerY = 200;
     Vector2 playerPos = {0,0};
     Vector2 direction = {0,0};
-    float x = 0;
-    float y = 0;
+    float x = 220;
+    float y = 660;
+    int ballX = 400;
+    int ballY = 500;
     void setUsername(std::string x);
     void runGame();
 };

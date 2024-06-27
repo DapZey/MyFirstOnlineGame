@@ -7,11 +7,12 @@
 #include <atomic>
 #include <vector>
 #include "Utils.h"
+#include "World.h"
 struct Client {
     SOCKET socket;
     sockaddr_in address;
     int addressLength = sizeof(address);
-    char buffer[20]; // Separate buffer for each client
+    char buffer[40]; // Separate buffer for each client
     int x = 0;
     int y = 0;
     std::chrono::time_point<std::chrono::steady_clock> lastSendRecvTimeGeneral = std::chrono::steady_clock::now();
@@ -22,6 +23,11 @@ struct Client {
     int currentRTT = 0;
     int averageRTT = 0;
     long long totalRTT = 0;
+    bool centered = false;
+    bool waiting = false;
+    float oldBallX = 0;
+    float oldBallY =0;
+    int needToRespond = false;
 };
 std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
     std::vector<std::string> result;
@@ -49,6 +55,10 @@ void listenForStopCommand(std::atomic<bool>& running) {
             running = false;
         }
     }
+}
+bool containsChar(const std::string &str, char ch) {
+    // Use the find method to check if the character is in the string
+    return str.find(ch) != std::string::npos;
 }
 SOCKET createSocket(int port) {
     SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -102,74 +112,110 @@ int main() {
 
     // Start the thread to listen for the stop command
     std::thread stopCommandThread(listenForStopCommand, std::ref(running));
-    bool waiting = false;
+    const std::string responseRTT = "%";
+    const std::string checkRTT = "&";
+    World world;
     while (running) {
+        world.run();
         for (int i = 0; i < 2; ++i) {
             auto now = std::chrono::steady_clock::now();
             auto elapsedGeneral = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].lastSendRecvTimeGeneral);
             auto elapsedRTT = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].lastSendRecvTimeRTT);
+            int otherClientIndex = (i == 0) ? 1 : 0;
+            std::string stringToSendToCurrent;
+            std::string stringToSendToOther;
+            std::string data = clients[i].buffer;
+            if (data.empty()){
+//                std::cout<<"no data\n";
+            }
+            else {
+                std::cout<< "received: "<<data<<"\n";
+            }
+            if (elapsedRTT.count() >= 1000 && clients[i].waiting == false && clients[i].centered == true) {
+                clients[i].waiting = true;
+                stringToSendToCurrent += checkRTT;
+                clients[i].lastSendRecvTimeRTT = now;
+                clients[i].RTTGap = now;
+                std::string s ="?"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y)+"?";
+                stringToSendToCurrent +=s;
+                std::cout<<"1 second passed, sending rtt check\n";
+            }
+            if (containsChar(data,'%')) {
+                clients[i].needToRespond = true;
+                std::cout<<"received rtt queue from player\n";
+            }
+            if (containsChar(data, '&')){
+                clients[i].waiting = false;
+                auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].RTTGap);
+                clients[i].currentRTT = time.count();
+                clients[i].rttCount++;
+                clients[i].totalRTT += clients[i].currentRTT;
+                clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
+                clients[i].updateFreq = (int)(0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT);
+                std::cout<<"received rtt check response, frequency is"<<clients[i].updateFreq<<"\n";
+            }
+            if (containsChar(data,'*')){
+                std::vector<std::string> coordinates = splitstringbychar(data.substr(data.find('*')+1,data.size()),",");
+                Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
+                Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
+                std::cout<<"received coordinates\n";
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 79 && clients[i].centered == true){
+                    std::cout<<"coords invalid, rerouting player\n";
+                }
+                else {
+                    clients[i].centered = true;
+                    clients[i].x = std::stoi(coordinates[0]);
+                    clients[i].y = std::stoi(coordinates[1]);
+                    std::string s = "$"+std::to_string(clients[i].x)+","+ std::to_string(clients[i].y) +"$";
+                    stringToSendToOther += s;
+                    std::cout<<"applying and forwarding coords\n";
+                }
+
+            }
+            if (clients[i].oldBallY != world.ball.y || clients[i].oldBallX != world.ball.x){
+                clients[i].oldBallY = world.ball.y;
+                clients[i].oldBallX = world.ball.x;
+                std::string s = "*"+ std::to_string((int)clients[i].oldBallX)+","+std::to_string((int)clients[i].oldBallY)+"*";
+                stringToSendToCurrent += s;
+            }
+            if (elapsedGeneral.count() >= clients[i].updateFreq) {
+                if (clients[i].needToRespond){
+                    stringToSendToCurrent += responseRTT;
+                    clients[i].needToRespond = false;
+                }
+                if (!stringToSendToCurrent.empty()){
+                    clients[i].lastSendRecvTimeGeneral = now;
+                    int message = sendto(clients[i].socket, stringToSendToCurrent.c_str(), static_cast<int>(stringToSendToCurrent.size()) + 1, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
+                    if (message == SOCKET_ERROR) {
+                    }
+                }
+                if (!stringToSendToOther.empty()){
+                    clients[i].lastSendRecvTimeGeneral = now;
+                    int otherMessage = sendto(clients[otherClientIndex].socket, stringToSendToOther.c_str(), static_cast<int>(stringToSendToOther.size()) + 1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
+                    if (otherMessage == SOCKET_ERROR) {
+                    }
+                }
+                if (!stringToSendToCurrent.empty() || !stringToSendToOther.empty()){
+//                    std::cout<<"update freq valid, sending to current: "<<stringToSendToCurrent<<" and other "<<stringToSendToOther<<"\n";
+                }
+            }
+            else {
+//                std::cout<<"updateFrequency invalid, frequency is: "<<clients[i].updateFreq<<" but elapsed is: "<<elapsedGeneral.count()<<"\n";
+            }
+            std::memset(clients[i].buffer,0,sizeof clients[i].buffer);
+            char clientIP[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &clients[i].address.sin_addr, clientIP, INET_ADDRSTRLEN);
+            unsigned short clientPort = ntohs(clients[i].address.sin_port);
             int bytes = recvfrom(clients[i].socket, clients[i].buffer, sizeof(clients[i].buffer), 0, (sockaddr*)&clients[i].address, &clients[i].addressLength);
             if (bytes == SOCKET_ERROR) {
                 int error = WSAGetLastError();
                 if (error == WSAEWOULDBLOCK || error == WSAEMSGSIZE) {
                     continue;
                 } else {
-                    std::cerr << "recvfrom failed with error: " << error << "\n";
+//                    std::cerr << "recvfrom failed with error: " << error << "\n";
                     continue;
                 }
             }
-            int otherClientIndex = (i == 0) ? 1 : 0;
-            if (clients[i].buffer[0] =='%') {
-                int sendResult = sendto(clients[i].socket, clients[i].buffer, bytes, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
-                if (sendResult == SOCKET_ERROR) {
-                    std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
-                }
-            } else if (clients[i].buffer[0] =='&'){
-                auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].RTTGap);
-//                clients[i].updateFreq = time.count();
-                clients[i].currentRTT = time.count();
-                clients[i].rttCount++;
-                clients[i].totalRTT += clients[i].currentRTT;
-                clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
-                clients[i].updateFreq = (int)(0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT);
-                std::cout << clients[i].updateFreq << "\n";
-                waiting = false;
-            }
-            else {
-                std::vector<std::string> coordinates = splitstringbychar(clients[i].buffer, ",");
-                Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
-                Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
-                if (Utils::Vector2Distance(coords, currentClientCoords) > 50){
-                    std::cout<<"big correction"<<"\n";
-                    std::cout<< "x correction from "<<coords.x<<" to "<< currentClientCoords.x<<"\n";
-                    std::cout<< "y correction from "<<coords.y<<" to "<< currentClientCoords.y<<"\n";
-                }
-                else {
-                    clients[i].x = std::stoi(coordinates[0]);
-                    clients[i].y = std::stoi(coordinates[1]);
-                    if (elapsedGeneral.count() >= clients[i].updateFreq + 1) {
-                        std::string s = std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
-                        int sendResult = sendto(clients[otherClientIndex].socket, s.c_str(), s.length()+1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
-                        if (sendResult == SOCKET_ERROR) {
-                            std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
-                        }
-                    }
-                }
-            }
-            if (elapsedRTT.count() >= 1000 && waiting == false) {
-                waiting = true;
-                clients[i].lastSendRecvTimeRTT = now;
-                clients[i].RTTGap = now;
-                std::string s ="&"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y);
-                int sendResult = sendto(clients[i].socket, s.c_str(), s.size()+1, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
-                if (sendResult == SOCKET_ERROR) {
-                    std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
-                }
-                std::cout<<i<<" coordinates: \nx: "<<clients[i].x<<"\ny: "<<clients[i].y<<"\n";
-            }
-            char clientIP[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &clients[i].address.sin_addr, clientIP, INET_ADDRSTRLEN);
-            unsigned short clientPort = ntohs(clients[i].address.sin_port);
         }
     }
     stopCommandThread.join();

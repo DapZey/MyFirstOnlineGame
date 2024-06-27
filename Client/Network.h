@@ -14,8 +14,9 @@ class Network {
     int iResult;
     sockaddr_in serverMessage;
     SOCKET output;
-    char buffer[20];
+    char buffer[40];
     sockaddr_in serverResponse;
+
     int serverResponseSize;
     std::string s;
     std::string old = "";
@@ -28,6 +29,8 @@ public:
     std::string receiveData();
     void sendRTT();
     int receiveRTT();
+    int receiveBall();
+    void sendData(std::string s);
 };
 
 

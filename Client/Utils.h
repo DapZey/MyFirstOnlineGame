@@ -11,10 +11,49 @@
 #include <ws2tcpip.h>
 #include "cmath"
 #include "raylib.h"
+#include <iostream>
 class Utils {
 public:
     static bool IsKeyPressedGlobal(int key) {
         return GetAsyncKeyState(key) & 0x8000;
+    }
+    static std::string extractSubstringBetweenDelimiters(const std::string &str, char delimiter) {
+        size_t startPos = str.find(delimiter);
+        if (startPos == std::string::npos) {
+            return "";  // Delimiter not found
+        }
+
+        size_t endPos = str.find(delimiter, startPos + 1);
+        if (endPos == std::string::npos) {
+            return "";  // Second occurrence of the delimiter not found
+        }
+
+        // Extract the substring between the delimiters
+        return str.substr(startPos, endPos - startPos + 1);
+    }
+
+// Function to extract substrings between *, ?, and $ delimiters
+    static std::vector<std::string> extractSubstrings(const std::string &str) {
+        std::vector<std::string> result;
+        std::string starSubstring = extractSubstringBetweenDelimiters(str, '*');
+        if (!starSubstring.empty()) {
+            result.push_back(starSubstring);
+        }
+
+        std::string questionSubstring = extractSubstringBetweenDelimiters(str, '?');
+        if (!questionSubstring.empty()) {
+            result.push_back(questionSubstring);
+        }
+
+        std::string dollarSubstring = extractSubstringBetweenDelimiters(str, '$');
+        if (!dollarSubstring.empty()) {
+            result.push_back(dollarSubstring);
+        }
+        return result;
+    }
+    static bool containsChar(const std::string &str, char ch) {
+        // Use the find method to check if the character is in the string
+        return str.find(ch) != std::string::npos;
     }
     static std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
         std::vector<std::string> result;

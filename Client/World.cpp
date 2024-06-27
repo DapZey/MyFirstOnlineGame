@@ -6,11 +6,11 @@
 #include "cmath"
 #include <iostream>
 World::World() {
-    borders.push_back({ -100, -100, 600, 10 });  // Top border
-    borders.push_back({ -100, 800, 600, 10 });   // Bottom border
-    borders.push_back({ -100, -100, 10, 900});  // Left border
-    borders.push_back({ 500, -100, 10, 900 });   // Right border
-
+    borders.push_back({ 0, 0, 800, 10 });  // Top border
+    borders.push_back({ 0, 1000, 800, 10 });   // Bottom border
+    borders.push_back({ 0, 0, 10, 1000});  // Left border
+    borders.push_back({ 800, 0, 10, 1000 });   // Right border
+    borders.push_back({0,500,800,10});
 }
 void World::draw() {
     for (int i = 0; i < borders.size(); i++){

@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(Server main.cpp
         Utils.cpp
         Utils.h
+        World.cpp
+        World.h
 )
 set(WINSOCK_LIBRARIES ws2_32)
 

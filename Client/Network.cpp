@@ -16,6 +16,15 @@ int Network::receiveRTT() {
     }
     return 0;
 }
+int Network::receiveBall() {
+    if (buffer[0] =='?') {
+        int sendResult = sendto(output, "?", 2,0, (sockaddr*)&serverMessage, sizeof(serverMessage));
+        if (sendResult == SOCKET_ERROR) {
+            std::cerr << "sendto failed with error: " << WSAGetLastError() << "\n";
+        }
+    }
+    return 0;
+}
 std::string Network::receiveData() {
     int bytesReceived = recvfrom(output, buffer, sizeof(buffer), 0, (sockaddr*)&serverResponse, &serverResponseSize);
     if (bytesReceived == SOCKET_ERROR) {
@@ -24,13 +33,18 @@ std::string Network::receiveData() {
             return "";
         }
     } else {
-        buffer[bytesReceived] = '\0';
         return buffer;
     }
     return "";
 }
-
+void Network::sendData(std::string s) {
+    int message = sendto(output, s.c_str(), static_cast<int>(s.size()) + 1, 0, (sockaddr*)&serverMessage, sizeof(serverMessage));
+    if (message == SOCKET_ERROR) {
+        std::cerr << "sendto() failed: " << WSAGetLastError() << "\n";
+    }
+}
 void Network::sendCoordinates(float x, float y) {
+    std::cout<<"sending coords\n";
     int xDir = std::round(x);
     int yDir = std::round(y);
     s = std::to_string(xDir) + "," + std::to_string(yDir);
@@ -65,7 +79,6 @@ int Network::createSocket() {
     u_long mode = 1;
     ioctlsocket(output, FIONBIO, &mode);
     serverResponseSize = sizeof(serverResponse);
-    std::cout<<"success";
     return 0;
 }
 void Network::shutDown() {
