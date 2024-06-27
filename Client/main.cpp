@@ -72,10 +72,6 @@ int main(int argc, char* argv[]) {
             std::string coordinates = "*"+std::to_string((int)gameWindow.x) + "," + std::to_string((int)gameWindow.y);
             if (oldX != gameWindow.x || oldY != gameWindow.y){
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {
-                    if (needToRespond == true){
-                        stringToSend += responseToRtt;
-                        needToRespond = false;
-                    }
                     stringToSend += coordinates;
                     lastSendRecvTimeGeneral = now;
                 } else {
@@ -83,6 +79,10 @@ int main(int argc, char* argv[]) {
                 }
                 oldX = gameWindow.x;
                 oldY = gameWindow.y;
+            }
+            if (needToRespond == true){
+                stringToSend += responseToRtt;
+                needToRespond = false;
             }
             std::vector<std::string> extractSubstrings = Utils::extractSubstrings(data);
             for (int i = 0; i < extractSubstrings.size(); i++){

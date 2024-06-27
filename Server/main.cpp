@@ -166,23 +166,27 @@ int main() {
                     clients[i].centered = true;
                     clients[i].x = std::stoi(coordinates[0]);
                     clients[i].y = std::stoi(coordinates[1]);
-                    std::string s = "$"+std::to_string(clients[i].x)+","+ std::to_string(clients[i].y) +"$";
-                    stringToSendToOther += s;
-                    std::cout<<"applying and forwarding coords\n";
+                    if (elapsedGeneral.count() >= clients[i].updateFreq) {
+                        std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
+                        stringToSendToOther += s;
+                        std::cout << "applying and forwarding coords\n";
+                    }
                 }
 
             }
-            if (clients[i].oldBallY != world.ball.y || clients[i].oldBallX != world.ball.x){
+            if (clients[i].oldBallY != world.ball.y || clients[i].oldBallX != world.ball.x) {
                 clients[i].oldBallY = world.ball.y;
                 clients[i].oldBallX = world.ball.x;
-                std::string s = "*"+ std::to_string((int)clients[i].oldBallX)+","+std::to_string((int)clients[i].oldBallY)+"*";
+                if (elapsedGeneral.count() >= clients[i].updateFreq) {
+                std::string s = "*" + std::to_string((int) clients[i].oldBallX) + "," +
+                                std::to_string((int) clients[i].oldBallY) + "*";
                 stringToSendToCurrent += s;
             }
-            if (elapsedGeneral.count() >= clients[i].updateFreq) {
-                if (clients[i].needToRespond){
-                    stringToSendToCurrent += responseRTT;
-                    clients[i].needToRespond = false;
-                }
+            }
+            if (clients[i].needToRespond){
+                stringToSendToCurrent += responseRTT;
+                clients[i].needToRespond = false;
+            }
                 if (!stringToSendToCurrent.empty()){
                     clients[i].lastSendRecvTimeGeneral = now;
                     int message = sendto(clients[i].socket, stringToSendToCurrent.c_str(), static_cast<int>(stringToSendToCurrent.size()) + 1, 0, (sockaddr*)&clients[i].address, clients[i].addressLength);
@@ -198,7 +202,6 @@ int main() {
                 if (!stringToSendToCurrent.empty() || !stringToSendToOther.empty()){
 //                    std::cout<<"update freq valid, sending to current: "<<stringToSendToCurrent<<" and other "<<stringToSendToOther<<"\n";
                 }
-            }
             else {
 //                std::cout<<"updateFrequency invalid, frequency is: "<<clients[i].updateFreq<<" but elapsed is: "<<elapsedGeneral.count()<<"\n";
             }
