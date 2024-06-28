@@ -14,8 +14,8 @@
 
 
 int main(int argc, char* argv[]) {
-    const int screenWidth = 1280;
-    const int screenHeight = 960;
+    const int screenWidth = 1000;
+    const int screenHeight = 800;
     const std::string responseToRtt = "&";
     const std::string myRTT = "%";
 
