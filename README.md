@@ -46,8 +46,8 @@ Stuff is still a bit buggy if you dont run in a proper order:
 
 3) (maybe) experiment with a player count larger with two by utilizing fd_sets and/or multiple sockets on the same port
 
-4) add a "world environment" class to the server file and get started on the actual game loop (deltatime, sprites, severside animation and collision etc)
+4) add a "world environment" class to the server file and get started on the actual game loop (deltatime, sprites, severside animation and collision etc) *IN PROGRESS*
 
 5) Handle logic of server removing a disconnected client while maintaining user vector size
 
-6) server side movement smoothing/interpolation correction *IN PROGRESS*
+6) server side movement smoothing/interpolation correction 
