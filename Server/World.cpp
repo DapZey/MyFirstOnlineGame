@@ -23,7 +23,15 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
         for (const auto& border : borders) {
             if (CheckCollisionCircleRec({tempBall.x,tempBall.y},15,border)) {
                 collisionDetected = true;
+                collisionType = wall;
                 break;
+            }
+            for (int k = 0; k < 2; k++){
+                if (Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30)){
+                    collisionDetected = true;
+                    collisionType = playerStationary;
+                    break;
+                }
             }
         }
         if (!collisionDetected) {
@@ -40,6 +48,14 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
         for (const auto& border : borders) {
             if (CheckCollisionCircleRec({tempBall.x,tempBall.y},15,border)) {
                 collisionDetected = true;
+                collisionType = wall;
+                break;
+            }
+        }
+        for (int k = 0; k < 2; k++){
+            if (Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30)){
+                collisionDetected = true;
+                collisionType = playerStationary;
                 break;
             }
         }
@@ -94,14 +110,19 @@ void World::moveBall() {
     if (ball.momentum <= 0) {
         ball.momentum = 0;  // Ensure momentum doesn't go negative
     }
-
-    float newXPos = ball.x + (ball.direction.x * ball.momentum);
-    float newYPos = ball.y + (ball.direction.y * ball.momentum);
+    Vector2 directionCurrent = Utils::normalize({ball.direction.x,ball.direction.y});
+    float newXPos = ball.x + (directionCurrent.x * ball.momentum);
+    float newYPos = ball.y + (directionCurrent.y * ball.momentum);
     Vector2 newPos = findCollision({ball.x, ball.y}, {newXPos, newYPos}, ball.radius);
     ball.x = newPos.x;
     ball.y = newPos.y;
     if (newXPos != ball.x) {
-        ball.direction.x = -ball.direction.x;
+        if (collisionType == wall){
+            ball.direction.x = -ball.direction.x;
+        }
+        if (collisionType == playerStationary){
+
+        }
         ball.momentum -= 0.5;
         if (ball.momentum <= 0) {
             ball.momentum = 0;  // Ensure momentum doesn't go negative
@@ -109,7 +130,12 @@ void World::moveBall() {
     }
 
     if (newYPos != ball.y) {
-        ball.direction.y = -ball.direction.y;
+        if (collisionType == wall){
+            ball.direction.y = -ball.direction.y;
+        }
+        if (collisionType == playerStationary){
+
+        }
         ball.momentum -= 0.5;
         if (ball.momentum <= 0) {
             ball.momentum = 0;  // Ensure momentum doesn't go negative

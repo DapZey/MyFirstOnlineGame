@@ -10,6 +10,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include "cmath"
+#include <iostream>
 
 struct Vector2{
     float x;
@@ -18,8 +19,36 @@ struct Vector2{
 
 class Utils {
 public:
+    static std::vector<float> generatePositions(float currentPos, float expectedPos) {
+        std::vector<float> positions;
+        float dx = expectedPos - currentPos;
+        float distance = std::abs(dx);
+        float stepSize = 0.1f;
+        int numSteps = static_cast<int>(distance / stepSize);
+        positions.push_back(currentPos);
+        for (int i = 1; i <= numSteps; ++i) {
+            float t = static_cast<float>(i) / numSteps;
+            float x = currentPos + t * dx;
+            positions.push_back(x);
+        }
+        positions.push_back(expectedPos);
+        return positions;
+    }
     static bool IsKeyPressedGlobal(int key) {
         return GetAsyncKeyState(key) & 0x8000;
+    }
+    static bool CheckCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2)
+    {
+        bool collision = false;
+
+        float dx = center2.x - center1.x;      // X distance between centers
+        float dy = center2.y - center1.y;      // Y distance between centers
+
+        float distance = sqrtf(dx*dx + dy*dy); // Distance between centers
+
+        if (distance <= (radius1 + radius2)) collision = true;
+
+        return collision;
     }
     static std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
         std::vector<std::string> result;

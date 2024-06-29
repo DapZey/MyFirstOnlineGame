@@ -165,7 +165,9 @@ int main() {
                 else {
                     clients[i].centered = true;
                     clients[i].x = std::stoi(coordinates[0]);
+                    world.players[i].x = std::stof(coordinates[0]);
                     clients[i].y = std::stoi(coordinates[1]);
+                    world.players[i].y = std::stof(coordinates[1]);
                     if (elapsedGeneral.count() >= clients[i].updateFreq) {
                         std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
                         stringToSendToOther += s;
