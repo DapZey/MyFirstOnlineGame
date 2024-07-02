@@ -69,6 +69,9 @@ int main(int argc, char* argv[]) {
                 lastSendRecvTimeRTT = now;
                 RTTGap = now;
             }
+            if (IsKeyDown(KEY_R)){
+                stringToSend += "@";
+            }
             std::string coordinates = "*"+std::to_string((int)gameWindow.x) + "," + std::to_string((int)gameWindow.y);
             if (oldX != gameWindow.x || oldY != gameWindow.y){
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {

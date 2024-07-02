@@ -143,6 +143,11 @@ int main() {
                 clients[i].needToRespond = true;
                 std::cout<<"received rtt queue from player\n";
             }
+            if (containsChar(data,'@')){
+                world.ball.y = 200;
+                world.ball.x = 400;
+                world.ball.momentum = 0;
+            }
             if (containsChar(data, '&')){
                 clients[i].waiting = false;
                 auto time = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].RTTGap);
@@ -166,6 +171,7 @@ int main() {
                     clients[i].x = std::stoi(coordinates[0]);
                     clients[i].y = std::stoi(coordinates[1]);
                     world.players[i].toMove = {std::stof(coordinates[0]),std::stof(coordinates[1])};
+                    world.players[i].connected = true;
 //                    world.players[i].directionPrev = world.players[i].direction;
 //                    world.players[i].direction = Utils::normalize({world.players[i].x - world.players[i].xPrev, world.players[i].y - world.players[i].yPrev});
 //                    Vector2 playerCollision = Utils::CheckCollisionCircles({world.players[i].x,world.players[i].y},30,{world.ball.x, world.ball.y},15);

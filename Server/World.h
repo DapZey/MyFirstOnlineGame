@@ -16,6 +16,7 @@ struct Ball{
     float radius = 15;
 };
 struct Player{
+    bool connected = false;
     float x = 0;
     float xPrev = 0;
     float y = 0;

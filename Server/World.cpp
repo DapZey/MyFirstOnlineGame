@@ -120,7 +120,7 @@ void World::movePlayer() {
         players[i].directionPrev = players[i].direction;
         players[i].direction = Utils::normalize({players[i].x - players[i].xPrev, players[i].y - players[i].yPrev});
         Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},30);
-        if (Utils::checkEqualVectors(players[i].direction, players[i].directionPrev)){
+        if (Utils::checkEqualVectors(players[i].direction, players[i].directionPrev) && !Utils::checkEqualVectors(players[i].direction,{0,0})){
             players[i].momentum++;
             if (players[i].momentum > 20){
                 players[i].momentum = 20;

@@ -53,6 +53,12 @@ public:
         }
         return direction;
     }
+    static bool checkEqualVectors(Vector2 first, Vector2 second){
+        if (first.x == second.x && first.y == second.y){
+            return true;
+        }
+        return false;
+    }
     static Vector2 CheckCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2)
     {
         Vector2 toReturn = {0,0};
