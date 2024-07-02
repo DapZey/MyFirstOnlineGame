@@ -116,7 +116,6 @@ int main() {
     const std::string checkRTT = "&";
     World world;
     while (running) {
-        world.run();
         for (int i = 0; i < 2; ++i) {
             auto now = std::chrono::steady_clock::now();
             auto elapsedGeneral = std::chrono::duration_cast<std::chrono::milliseconds>(now - clients[i].lastSendRecvTimeGeneral);
@@ -165,9 +164,15 @@ int main() {
                 else {
                     clients[i].centered = true;
                     clients[i].x = std::stoi(coordinates[0]);
-                    world.players[i].x = std::stof(coordinates[0]);
                     clients[i].y = std::stoi(coordinates[1]);
-                    world.players[i].y = std::stof(coordinates[1]);
+                    world.players[i].toMove = {std::stof(coordinates[0]),std::stof(coordinates[1])};
+//                    world.players[i].directionPrev = world.players[i].direction;
+//                    world.players[i].direction = Utils::normalize({world.players[i].x - world.players[i].xPrev, world.players[i].y - world.players[i].yPrev});
+//                    Vector2 playerCollision = Utils::CheckCollisionCircles({world.players[i].x,world.players[i].y},30,{world.ball.x, world.ball.y},15);
+//                    if (playerCollision.x != 0 || playerCollision.y != 0){
+//                        world.ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({world.players[i].x,world.players[i].y},playerCollision),world.players[i].direction);
+//                        world.ball.momentum = 10;
+//                    }
                     if (elapsedGeneral.count() >= clients[i].updateFreq) {
                         std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
                         stringToSendToOther += s;
@@ -222,6 +227,7 @@ int main() {
                 }
             }
         }
+        world.run();
     }
     stopCommandThread.join();
     // Clean up

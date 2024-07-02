@@ -37,18 +37,43 @@ public:
     static bool IsKeyPressedGlobal(int key) {
         return GetAsyncKeyState(key) & 0x8000;
     }
-    static bool CheckCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2)
-    {
-        bool collision = false;
+    static Vector2 returnDirectionVector(Vector2 center, Vector2 collisionPoint) {
+        // Calculate the direction vector from center to collision point
+        Vector2 direction = {0,0};
+        direction.x = collisionPoint.x - center.x;
+        direction.y = collisionPoint.y - center.y;
 
+        // Calculate the length of the direction vector
+        float length = sqrtf(direction.x * direction.x + direction.y * direction.y);
+
+        // Normalize the direction vector so its components are between -1 and 1
+        if (length != 0) {
+            direction.x /= length;
+            direction.y /= length;
+        }
+        return direction;
+    }
+    static Vector2 CheckCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2)
+    {
+        Vector2 toReturn = {0,0};
         float dx = center2.x - center1.x;      // X distance between centers
         float dy = center2.y - center1.y;      // Y distance between centers
 
-        float distance = sqrtf(dx*dx + dy*dy); // Distance between centers
+        float distance = sqrtf(dx * dx + dy * dy); // Distance between centers
 
-        if (distance <= (radius1 + radius2)) collision = true;
-
-        return collision;
+        if (distance <= (radius1 + radius2))
+        {
+            // Calculate the collision point
+            float a = (radius1 * radius1 - radius2 * radius2 + distance * distance) / (2 * distance);
+            float h = sqrtf(radius1 * radius1 - a * a);
+            float cx2 = center1.x + a * (center2.x - center1.x) / distance;
+            float cy2 = center1.y + a * (center2.y - center1.y) / distance;
+            float collisionX = cx2 + h * (center2.y - center1.y) / distance;
+            float collisionY = cy2 - h * (center2.x - center1.x) / distance;
+            toReturn.x = collisionX;
+            toReturn.y = collisionY;
+        }
+        return toReturn;
     }
     static std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
         std::vector<std::string> result;
@@ -67,6 +92,12 @@ public:
         result.push_back(input.substr(start));
 
         return result;
+    }
+    static Vector2 CombineVectors(Vector2 vec1, Vector2 vec2) {
+        Vector2 combined;
+        combined.x = vec1.x + vec2.x;
+        combined.y = vec1.y + vec2.y;
+        return normalize(combined);
     }
     static Vector2 normalize(const Vector2 &vec) {
         float mag = magnitude(vec);

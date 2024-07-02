@@ -12,13 +12,19 @@ struct Ball{
     float x;
     float y;
     Vector2 direction = {1,1};
-    float momentum = 10;
+    float momentum = 0;
     float radius = 15;
 };
 struct Player{
     float x = 0;
+    float xPrev = 0;
     float y = 0;
-    int radius = 15;
+    float yPrev = 0;
+    int radius = 30;
+    Vector2 direction = {0,0};
+    Vector2 directionPrev = {0,0};
+    Vector2 toMove = {0,0};
+    int momentum;
 };
 struct Border{
     int x;
@@ -28,8 +34,7 @@ struct Border{
 };
 enum CollisionType{
     wall,
-    playerStationary,
-    playerMoving
+    playerStationary
 };
 class World {
     std::chrono::time_point<std::chrono::steady_clock> currentFrameTime = std::chrono::steady_clock::now();
@@ -47,6 +52,7 @@ public:
     void run();
     void moveBall();
     World();
+    void movePlayer();
 };
 
 

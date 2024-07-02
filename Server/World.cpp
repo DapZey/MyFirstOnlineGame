@@ -13,6 +13,7 @@ World::World() {
 
 Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int radius) {
     Vector2 collisionPoint = {current.x, current.y};
+    bool ballCollision = false;
     std::vector<float> positionsX = Utils::generatePositions(current.x, expected.x);
     std::vector<float> positionsY = Utils::generatePositions(current.y, expected.y);
 
@@ -27,14 +28,17 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
                 break;
             }
             for (int k = 0; k < 2; k++){
-                if (Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30)){
+                Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
+                if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0){
                     collisionDetected = true;
                     collisionType = playerStationary;
+                    ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
+                    ballCollision = true;
                     break;
                 }
             }
         }
-        if (!collisionDetected) {
+        if (!collisionDetected|| collisionType == playerStationary) {
             collisionPoint.x = positionsX[i];
         } else {
             break;
@@ -53,13 +57,15 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             }
         }
         for (int k = 0; k < 2; k++){
-            if (Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30)){
+            Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
+            if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0 && !ballCollision){
                 collisionDetected = true;
                 collisionType = playerStationary;
+                ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
                 break;
             }
         }
-        if (!collisionDetected) {
+        if (!collisionDetected || collisionType == playerStationary) {
             collisionPoint.y = positionsY[i];
         } else {
             break;
@@ -101,6 +107,23 @@ void World::run() {
     }
     for (int i = 0; i < ticksPassed; i++) {
         moveBall();
+        movePlayer();
+    }
+}
+
+void World::movePlayer() {
+    for (int i = 0; i < 2; i++){
+        players[i].xPrev = players[i].x;
+        players[i].yPrev = players[i].y;
+        players[i].x = players[i].toMove.x;
+        players[i].y = players[i].toMove.y;
+        players[i].directionPrev = players[i].direction;
+        players[i].direction = Utils::normalize({players[i].x - players[i].xPrev, players[i].y - players[i].yPrev});
+        Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},30);
+        if (playerCollision.x != 0 || playerCollision.y != 0){
+            ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({players[i].x,players[i].y},playerCollision),players[i].direction);
+                        ball.momentum = 20;
+                    }
     }
 }
 
@@ -120,28 +143,14 @@ void World::moveBall() {
         if (collisionType == wall){
             ball.direction.x = -ball.direction.x;
         }
-        if (collisionType == playerStationary){
-
-        }
-        ball.momentum -= 0.5;
-        if (ball.momentum <= 0) {
-            ball.momentum = 0;  // Ensure momentum doesn't go negative
-        }
     }
 
     if (newYPos != ball.y) {
         if (collisionType == wall){
             ball.direction.y = -ball.direction.y;
         }
-        if (collisionType == playerStationary){
-
-        }
-        ball.momentum -= 0.5;
-        if (ball.momentum <= 0) {
-            ball.momentum = 0;  // Ensure momentum doesn't go negative
-        }
     }
-    if (ball.momentum == 0){
-        ball.momentum = 10;
-    }
+//    if (ball.momentum == 0){
+//        ball.momentum = 10;
+//    }
 }
