@@ -35,7 +35,8 @@ struct Border{
 };
 enum CollisionType{
     wall,
-    playerStationary
+    playerStationary,
+    playerMoving
 };
 class World {
     std::chrono::time_point<std::chrono::steady_clock> currentFrameTime = std::chrono::steady_clock::now();

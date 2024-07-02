@@ -29,13 +29,14 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             }
             for (int k = 0; k < 2; k++){
                 Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
-                if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0){
-                    collisionDetected = true;
-                    collisionType = playerStationary;
-                    ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
-                    ballCollision = true;
-                    break;
-                }
+//                if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0){
+//                    collisionDetected = true;
+//                    collisionType = playerStationary;
+//                    ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
+//                    ballCollision = true;
+//                    std::cout<<"stationaryHit\n";
+//                    break;
+//                }
             }
         }
         if (!collisionDetected|| collisionType == playerStationary) {
@@ -58,12 +59,13 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
         }
         for (int k = 0; k < 2; k++){
             Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
-            if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0 && !ballCollision){
-                collisionDetected = true;
-                collisionType = playerStationary;
-                ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
-                break;
-            }
+//            if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0 && !ballCollision){
+//                collisionDetected = true;
+//                collisionType = playerStationary;
+//                std::cout<<"stationaryHit\n";
+//                ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
+//                break;
+//            }
         }
         if (!collisionDetected || collisionType == playerStationary) {
             collisionPoint.y = positionsY[i];
@@ -120,22 +122,31 @@ void World::movePlayer() {
         players[i].directionPrev = players[i].direction;
         players[i].direction = Utils::normalize({players[i].x - players[i].xPrev, players[i].y - players[i].yPrev});
         Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},30);
-        if (Utils::checkEqualVectors(players[i].direction, players[i].directionPrev) && !Utils::checkEqualVectors(players[i].direction,{0,0})){
+        if (!Utils::checkEqualVectors(players[i].direction, {0,0})){
+            collisionType = playerMoving;
+        }
+        else {
+            collisionType = playerStationary;
+        }
+        if (Utils::checkEqualVectors(players[i].direction, players[i].directionPrev) && collisionType == playerMoving){
             players[i].momentum++;
-            if (players[i].momentum > 20){
-                players[i].momentum = 20;
+            if (players[i].momentum > 30){
+                players[i].momentum = 30;
             }
         }
         else {
-            players[i].momentum--;
-            if (players[i].momentum < 0){
-                players[i].momentum = 0;
-            }
+                players[i].momentum--;
+                if (players[i].momentum < 10){
+                    players[i].momentum = 10;
+                }
         }
         if (playerCollision.x != 0 || playerCollision.y != 0){
+            std::cout<<"directionHit\n";
             ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({players[i].x,players[i].y},playerCollision),players[i].direction);
-                        ball.momentum = players[i].momentum;
-                    }
+            if (collisionType == playerMoving){
+                ball.momentum = players[i].momentum;
+            }
+        }
     }
 }
 
