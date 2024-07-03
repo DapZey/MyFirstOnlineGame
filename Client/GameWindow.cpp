@@ -76,8 +76,10 @@ void GameWindow::runGame() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode2D(playerFollowCamera);
-    DrawCircle(x, y, RADIUS, RED);
-    DrawCircle(newPlayerx, newPlayerY, RADIUS, RED);
+//    DrawCircle(x, y, RADIUS, RED);
+    DrawTexturePro(assets,{3070,750,198,207},{x-RADIUS,y-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
+    DrawTexturePro(assets,{3070,750,198,207},{(float)newPlayerx-RADIUS,(float)newPlayerY-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
+//    DrawCircle(newPlayerx, newPlayerY, RADIUS, RED);
     DrawCircle(ballX, ballY, BALL_RADIUS, BLUE);
     RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
     RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);

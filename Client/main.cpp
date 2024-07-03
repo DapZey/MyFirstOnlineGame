@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
         }
 
     }
-
+    UnloadTexture(gameWindow.assets);
     RaylibCloseWindow();
     network.shutDown();
     return 0;

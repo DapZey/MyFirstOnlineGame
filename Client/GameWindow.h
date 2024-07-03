@@ -23,6 +23,7 @@ class GameWindow {
     void captureInput();
     Camera2D playerFollowCamera = {0};
 public:
+    Texture2D assets = LoadTexture("texture.png");
     World world;
     GameWindow();
     int newPlayerx = 100;
