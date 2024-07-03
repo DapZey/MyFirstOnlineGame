@@ -33,6 +33,10 @@ struct Border{
     int width;
     int height;
 };
+struct Line{
+    Vector2 start = {0,0};
+    Vector2 end = {0,0};
+};
 enum CollisionType{
     wall,
     playerStationary,
@@ -46,6 +50,7 @@ class World {
     Vector2 findCollision(Vector2 current, Vector2 expected, int radius);
     std::vector<Border> borders;
     CollisionType collisionType = wall;
+    std::vector<Line> lines;
 public:
     Player player1;
     Player player2;

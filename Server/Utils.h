@@ -19,6 +19,27 @@ struct Vector2{
 
 class Utils {
 public:
+    static bool CheckCollisionCircleLine(Vector2 circleCenter, float radius, Vector2 lineStart, Vector2 lineEnd)
+    {
+        // Vector from line start to circle center
+        Vector2 lineToCircle = { circleCenter.x - lineStart.x, circleCenter.y - lineStart.y };
+        // Vector representing the line segment
+        Vector2 lineVector = { lineEnd.x - lineStart.x, lineEnd.y - lineStart.y };
+
+        // Calculate the projection of the circle center onto the line
+        float lineLengthSquared = lineVector.x * lineVector.x + lineVector.y * lineVector.y;
+        float t = fmax(0, fmin(1, (lineToCircle.x * lineVector.x + lineToCircle.y * lineVector.y) / lineLengthSquared));
+
+        // Find the closest point on the line segment to the circle center
+        Vector2 closestPoint = { lineStart.x + t * lineVector.x, lineStart.y + t * lineVector.y };
+
+        // Calculate the distance from the circle center to the closest point
+        float distanceSquared = (circleCenter.x - closestPoint.x) * (circleCenter.x - closestPoint.x) +
+                                (circleCenter.y - closestPoint.y) * (circleCenter.y - closestPoint.y);
+
+        // Check if the distance is less than or equal to the circle's radius squared
+        return distanceSquared <= radius * radius;
+    }
     static std::vector<float> generatePositions(float currentPos, float expectedPos) {
         std::vector<float> positions;
         float dx = expectedPos - currentPos;

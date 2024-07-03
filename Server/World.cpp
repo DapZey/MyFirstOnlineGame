@@ -4,7 +4,10 @@ World::World() {
     borders.push_back({0, 990, 800, 10});  // Bottom border
     borders.push_back({0, 0, 10, 1000});   // Left border
     borders.push_back({790, 0, 10, 1000}); // Right border
-
+    lines.push_back({0,100,100,0});
+    lines.push_back({0,900,100,1000});
+    lines.push_back({700,0,800,100});
+    lines.push_back({700,1000,800,900});
     // Initialize the ball with some default values
     ball.x = 400;
     ball.y = 500;
@@ -39,6 +42,16 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
 //                }
             }
         }
+        for (int j = 0; j < lines.size();++j){
+            if (Utils::CheckCollisionCircleLine({tempBall.x,tempBall.y}, 15,lines[j].start,lines[j].end)){
+                collisionDetected = true;
+                collisionType = wall;
+                ball.momentum += 2;
+                if (ball.momentum > 30){
+                    ball.momentum += 2;
+                }
+                break;}
+        }
         if (!collisionDetected|| collisionType == playerStationary) {
             collisionPoint.x = positionsX[i];
         } else {
@@ -66,6 +79,17 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
 //                ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
 //                break;
 //            }
+        }
+        for (int j = 0; j < lines.size();++j){
+            if (Utils::CheckCollisionCircleLine({collisionPoint.x,tempBall.y}, 15,{lines[j].start},lines[j].end)){
+                collisionDetected = true;
+                collisionType = wall;
+                ball.momentum +=2;
+                if (ball.momentum > 30){
+                    ball.momentum = 30;
+                }
+                break;
+            }
         }
         if (!collisionDetected || collisionType == playerStationary) {
             collisionPoint.y = positionsY[i];

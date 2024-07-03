@@ -8,8 +8,13 @@
 #include "raylib.h"
 #include "vector"
 class World {
+    struct Line{
+        Vector2 start = {0,0};
+        Vector2 end = {0,0};
+    };
 private:
     std::vector<RaylibRectangle> borders;
+    std::vector<Line> lines;
 public:
     void draw();
     World();
