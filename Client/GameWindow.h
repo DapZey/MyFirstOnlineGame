@@ -32,8 +32,8 @@ public:
     Vector2 direction = {0,0};
     float x = 220;
     float y = 660;
-    int ballX = 400;
-    int ballY = 500;
+    int ballX = 387;
+    int ballY = 505;
     void setUsername(std::string x);
     void runGame();
 };

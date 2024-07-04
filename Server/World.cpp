@@ -9,14 +9,13 @@ World::World() {
     lines.push_back({700,0,800,100});
     lines.push_back({700,1000,800,900});
     // Initialize the ball with some default values
-    ball.x = 400;
-    ball.y = 500;
+    ball.x = 387;
+    ball.y = 505;
     gameTime = std::chrono::steady_clock::now();
 }
 
 Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int radius) {
     Vector2 collisionPoint = {current.x, current.y};
-    bool ballCollision = false;
     std::vector<float> positionsX = Utils::generatePositions(current.x, expected.x);
     std::vector<float> positionsY = Utils::generatePositions(current.y, expected.y);
 
@@ -29,17 +28,6 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
                 collisionDetected = true;
                 collisionType = wall;
                 break;
-            }
-            for (int k = 0; k < 2; k++){
-                Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
-//                if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0){
-//                    collisionDetected = true;
-//                    collisionType = playerStationary;
-//                    ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
-//                    ballCollision = true;
-//                    std::cout<<"stationaryHit\n";
-//                    break;
-//                }
             }
         }
         for (int j = 0; j < lines.size();++j){
@@ -69,16 +57,6 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
                 collisionType = wall;
                 break;
             }
-        }
-        for (int k = 0; k < 2; k++){
-            Vector2 collisionPointCircles = Utils::CheckCollisionCircles({tempBall.x, tempBall.y},15,{players[k].x,players[k].y},30);
-//            if (collisionPointCircles.x != 0 && collisionPointCircles.y != 0 && !ballCollision){
-//                collisionDetected = true;
-//                collisionType = playerStationary;
-//                std::cout<<"stationaryHit\n";
-//                ball.direction = Utils::returnDirectionVector({players[k].x,players[k].y},collisionPointCircles);
-//                break;
-//            }
         }
         for (int j = 0; j < lines.size();++j){
             if (Utils::CheckCollisionCircleLine({collisionPoint.x,tempBall.y}, 15,{lines[j].start},lines[j].end)){
@@ -159,13 +137,12 @@ void World::movePlayer() {
             }
         }
         else {
-                players[i].momentum--;
-                if (players[i].momentum < 10){
-                    players[i].momentum = 10;
+                players[i].momentum-=2;
+                if (players[i].momentum < 15){
+                    players[i].momentum = 15;
                 }
         }
         if (playerCollision.x != 0 || playerCollision.y != 0){
-            std::cout<<"directionHit\n";
             ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({players[i].x,players[i].y},playerCollision),players[i].direction);
             if (collisionType == playerMoving){
                 ball.momentum = players[i].momentum;

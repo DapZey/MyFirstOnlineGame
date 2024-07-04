@@ -22,7 +22,7 @@ void World::draw() {
         DrawRectangleRec(borders[i],BROWN);
     }
     for (int i =0; i < lines.size(); i++){
-        DrawLine(lines[i].start.x,lines[i].start.y,lines[i].end.x,lines[i].end.y,BROWN);
+        DrawLine(lines[i].start.x,lines[i].start.y,lines[i].end.x,lines[i].end.y,BLUE);
     }
 }
 

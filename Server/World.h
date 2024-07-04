@@ -25,7 +25,7 @@ struct Player{
     Vector2 direction = {0,0};
     Vector2 directionPrev = {0,0};
     Vector2 toMove = {0,0};
-    int momentum;
+    float momentum;
 };
 struct Border{
     int x;
