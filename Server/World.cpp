@@ -18,7 +18,6 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
     Vector2 collisionPoint = {current.x, current.y};
     std::vector<float> positionsX = Utils::generatePositions(current.x, expected.x);
     std::vector<float> positionsY = Utils::generatePositions(current.y, expected.y);
-
     for (size_t i = 0; i < positionsX.size(); ++i) {
         bool collisionDetected = false;
         Ball tempBall = ball;
@@ -55,6 +54,18 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             if (CheckCollisionCircleRec({tempBall.x,tempBall.y},15,border)) {
                 collisionDetected = true;
                 collisionType = wall;
+                if (tempBall.x > 345 && tempBall.x < 435){
+                    if (tempBall.y > 500){
+                        players[0].score++;
+                    }
+                    else {
+                        players[1].score++;
+                    }
+                    needToUpdateScore = true;
+                    ball.momentum = 0;
+                    ball.direction = {0,0};
+                    return {387,505};
+                }
                 break;
             }
         }
@@ -75,7 +86,6 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             break;
         }
     }
-
     return collisionPoint;
 }
 
@@ -174,7 +184,4 @@ void World::moveBall() {
             ball.direction.y = -ball.direction.y;
         }
     }
-//    if (ball.momentum == 0){
-//        ball.momentum = 10;
-//    }
 }

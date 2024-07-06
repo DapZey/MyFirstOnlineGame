@@ -72,6 +72,10 @@ int main(int argc, char* argv[]) {
             if (IsKeyDown(KEY_R)){
                 stringToSend += "@";
             }
+            if (needToRespond == true){
+                stringToSend += responseToRtt;
+                needToRespond = false;
+            }
             std::string coordinates = "*"+std::to_string((int)gameWindow.x) + "," + std::to_string((int)gameWindow.y);
             if (oldX != gameWindow.x || oldY != gameWindow.y){
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {
@@ -82,10 +86,6 @@ int main(int argc, char* argv[]) {
                 }
                 oldX = gameWindow.x;
                 oldY = gameWindow.y;
-            }
-            if (needToRespond == true){
-                stringToSend += responseToRtt;
-                needToRespond = false;
             }
             std::vector<std::string> extractSubstrings = Utils::extractSubstrings(data);
             for (int i = 0; i < extractSubstrings.size(); i++){
@@ -98,6 +98,12 @@ int main(int argc, char* argv[]) {
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");
                     gameWindow.newPlayerx = std::stoi(currentCoords[0]);
                     gameWindow.newPlayerY = std::stoi(currentCoords[1]);
+                }
+                if (extractSubstrings[i][0] == '~'){
+                    std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");
+                    gameWindow.player1Score = std::stoi(currentCoords[0]);
+                    std::cout<<gameWindow.player1Score<<"\n";
+                    gameWindow.player2Score = std::stoi(currentCoords[1]);
                 }
                 if (extractSubstrings[i][0] == '?'){
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");

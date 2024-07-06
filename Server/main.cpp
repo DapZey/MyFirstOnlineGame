@@ -130,7 +130,7 @@ int main() {
             else {
                 std::cout<< "received: "<<data<<"\n";
             }
-            if (elapsedRTT.count() >= 1000 && clients[i].waiting == false && clients[i].centered == true) {
+            if (elapsedRTT.count() >= 1000 && !clients[i].waiting && clients[i].centered) {
                 clients[i].waiting = true;
                 stringToSendToCurrent += checkRTT;
                 clients[i].lastSendRecvTimeRTT = now;
@@ -163,7 +163,7 @@ int main() {
                 Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
                 Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
                 std::cout<<"received coordinates\n";
-                if (Utils::Vector2Distance(coords, currentClientCoords) > 79 && clients[i].centered == true){
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 79 && clients[i].centered){
                     std::cout<<"coords invalid, rerouting player\n";
                 }
                 else {
@@ -172,17 +172,13 @@ int main() {
                     clients[i].y = std::stoi(coordinates[1]);
                     world.players[i].toMove = {std::stof(coordinates[0]),std::stof(coordinates[1])};
                     world.players[i].connected = true;
-//                    world.players[i].directionPrev = world.players[i].direction;
-//                    world.players[i].direction = Utils::normalize({world.players[i].x - world.players[i].xPrev, world.players[i].y - world.players[i].yPrev});
-//                    Vector2 playerCollision = Utils::CheckCollisionCircles({world.players[i].x,world.players[i].y},30,{world.ball.x, world.ball.y},15);
-//                    if (playerCollision.x != 0 || playerCollision.y != 0){
-//                        world.ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({world.players[i].x,world.players[i].y},playerCollision),world.players[i].direction);
-//                        world.ball.momentum = 10;
-//                    }
                     if (elapsedGeneral.count() >= clients[i].updateFreq) {
                         std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
                         stringToSendToOther += s;
                         std::cout << "applying and forwarding coords\n";
+                    }
+                    else {
+                        std::cout<<"client freq too high\n";
                     }
                 }
 
@@ -195,6 +191,11 @@ int main() {
                                 std::to_string((int) clients[i].oldBallY) + "*";
                 stringToSendToCurrent += s;
             }
+            }
+            if (world.needToUpdateScore){
+                stringToSendToCurrent += "~"+ std::to_string(world.players[i].score) + ","+std::to_string(world.players[otherClientIndex].score)+"~";
+                stringToSendToOther += "~"+ std::to_string(world.players[i].score) + ","+std::to_string(world.players[otherClientIndex].score)+"~";
+                world.needToUpdateScore = false;
             }
             if (clients[i].needToRespond){
                 stringToSendToCurrent += responseRTT;
@@ -212,12 +213,6 @@ int main() {
                     if (otherMessage == SOCKET_ERROR) {
                     }
                 }
-                if (!stringToSendToCurrent.empty() || !stringToSendToOther.empty()){
-//                    std::cout<<"update freq valid, sending to current: "<<stringToSendToCurrent<<" and other "<<stringToSendToOther<<"\n";
-                }
-            else {
-//                std::cout<<"updateFrequency invalid, frequency is: "<<clients[i].updateFreq<<" but elapsed is: "<<elapsedGeneral.count()<<"\n";
-            }
             std::memset(clients[i].buffer,0,sizeof clients[i].buffer);
             char clientIP[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &clients[i].address.sin_addr, clientIP, INET_ADDRSTRLEN);

@@ -26,6 +26,7 @@ struct Player{
     Vector2 directionPrev = {0,0};
     Vector2 toMove = {0,0};
     float momentum;
+    int score = 0;
 };
 struct Border{
     int x;
@@ -52,6 +53,7 @@ class World {
     CollisionType collisionType = wall;
     std::vector<Line> lines;
 public:
+    bool needToUpdateScore = false;
     Player player1;
     Player player2;
     Player players[2] = {player1,player2};

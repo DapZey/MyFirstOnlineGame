@@ -8,7 +8,7 @@
 #include <unordered_set>
 
 #define TICK_RATE_MS 16
-#define MOVEMENT_SPEED 13
+#define MOVEMENT_SPEED 10
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 800
 #define PLAYER_OFFSET 600
@@ -80,10 +80,17 @@ void GameWindow::runGame() {
     DrawTexturePro(assets,{3070,750,198,207},{x-RADIUS,y-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
     DrawTexturePro(assets,{3070,750,198,207},{(float)newPlayerx-RADIUS,(float)newPlayerY-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
     DrawTexturePro(assets,{2901,785,111,111},{(float)ballX-BALL_RADIUS,(float)ballY-BALL_RADIUS,BALL_RADIUS*2,BALL_RADIUS*2},{0,0},0,WHITE);
-    RaylibDrawText(TextFormat("Pos Y: %f", y), 10, 10, 20, LIGHTGRAY);
-    RaylibDrawText(TextFormat("FPS: %i", GetFPS()), 10, 40, 20, LIGHTGRAY);
-    RaylibDrawText(TextFormat("Pos X: %f", x), 10, 70, 20, LIGHTGRAY);
     world.draw();
+    if (username == "a"){
+        DrawTextPro(GetFontDefault(),TextFormat("FPS: %i", GetFPS()),{505,700},{playerFollowCamera.target.x,playerFollowCamera.target.y},180,20,5,GREEN);
+        DrawTextPro(GetFontDefault(),TextFormat("Player 1 score: %i", player1Score),{505,680},{playerFollowCamera.target.x,playerFollowCamera.target.y},180,20,5,GREEN);
+        DrawTextPro(GetFontDefault(),TextFormat("Player 2 score: %i", player2Score),{505,660},{playerFollowCamera.target.x,playerFollowCamera.target.y},180,20,5,GREEN);
+    }
+    else {
+        DrawTextPro(GetFontDefault(),TextFormat("Player 1 score: %i", player1Score),{playerFollowCamera.target.x,playerFollowCamera.target.y},{495,680},0,20,5,GREEN);
+        DrawTextPro(GetFontDefault(),TextFormat("Player 2 score: %i", player2Score),{playerFollowCamera.target.x,playerFollowCamera.target.y},{495,660},0,20,5,GREEN);
+        DrawTextPro(GetFontDefault(),TextFormat("FPS: %i", GetFPS()),{playerFollowCamera.target.x,playerFollowCamera.target.y},{495,700},0,20,5,GREEN);
+    }
     EndDrawing();
     EndMode2D();
 }

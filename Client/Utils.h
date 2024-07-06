@@ -70,6 +70,10 @@ public:
         if (!dollarSubstring.empty()) {
             result.push_back(dollarSubstring);
         }
+        std::string squiggleSubstring = extractSubstringBetweenDelimiters(str, '~');
+        if (!squiggleSubstring.empty()){
+            result.push_back(squiggleSubstring);
+        }
         return result;
     }
     static bool containsChar(const std::string &str, char ch) {
