@@ -34,6 +34,11 @@ bool World::checkCollisionGeneral(Vector2 current, int radius) {
             return true;
         }
     }
+    for (int i = 0; i < lines.size(); i++){
+        if (Utils::CheckCollisionCircleLine({ current.x, current.y },radius,lines[i].start,lines[i].end)){
+            return true;
+        }
+    }
     return false;
 }
 Vector2 World::findCollision(Vector2 current, Vector2 expected, int radius) {

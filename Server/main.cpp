@@ -28,6 +28,8 @@ struct Client {
     float oldBallX = 0;
     float oldBallY =0;
     int needToRespond = false;
+    bool needToSendBall = false;
+    bool needToSendCoords = false;
 };
 std::vector<std::string> splitstringbychar(const std::string& input, const std::string& delimiters) {
     std::vector<std::string> result;
@@ -155,7 +157,7 @@ int main() {
                 clients[i].rttCount++;
                 clients[i].totalRTT += clients[i].currentRTT;
                 clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
-                clients[i].updateFreq = (int)(0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT);
+                clients[i].updateFreq = (int)((0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT)/2);
                 std::cout<<"received rtt check response, frequency is"<<clients[i].updateFreq<<"\n";
             }
             if (containsChar(data,'*')){
@@ -172,25 +174,29 @@ int main() {
                     clients[i].y = std::stoi(coordinates[1]);
                     world.players[i].toMove = {std::stof(coordinates[0]),std::stof(coordinates[1])};
                     world.players[i].connected = true;
-                    if (elapsedGeneral.count() >= clients[i].updateFreq) {
-                        std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
-                        stringToSendToOther += s;
-                        std::cout << "applying and forwarding coords\n";
-                    }
-                    else {
-                        std::cout<<"client freq too high\n";
-                    }
+                    clients[i].needToSendCoords = true;
                 }
 
+            }
+            if (elapsedGeneral.count() >= clients[i].updateFreq && clients[i].needToSendCoords) {
+                std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
+                stringToSendToOther += s;
+                clients[i].needToSendCoords = false;
+                std::cout << "applying and forwarding coords\n";
+            }
+            else if (elapsedGeneral.count() < clients[i].updateFreq&& clients[i].needToSendCoords){
+                std::cout<<"client freq too high\n";
             }
             if (clients[i].oldBallY != world.ball.y || clients[i].oldBallX != world.ball.x) {
                 clients[i].oldBallY = world.ball.y;
                 clients[i].oldBallX = world.ball.x;
-                if (elapsedGeneral.count() >= clients[i].updateFreq) {
+                clients[i].needToSendBall = true;
+            }
+            if (elapsedGeneral.count() >= clients[i].updateFreq && clients[i].needToSendBall) {
                 std::string s = "*" + std::to_string((int) clients[i].oldBallX) + "," +
                                 std::to_string((int) clients[i].oldBallY) + "*";
                 stringToSendToCurrent += s;
-            }
+                clients[i].needToSendBall = false;
             }
             if (world.needToUpdateScore){
                 stringToSendToCurrent += "~"+ std::to_string(world.players[i].score) + ","+std::to_string(world.players[otherClientIndex].score)+"~";
@@ -200,6 +206,7 @@ int main() {
             if (clients[i].needToRespond){
                 stringToSendToCurrent += responseRTT;
                 clients[i].needToRespond = false;
+                std::cout<<"responded to rtt\n";
             }
                 if (!stringToSendToCurrent.empty()){
                     clients[i].lastSendRecvTimeGeneral = now;

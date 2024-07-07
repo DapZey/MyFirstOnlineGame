@@ -163,7 +163,7 @@ void World::movePlayer() {
 
 void World::moveBall() {
     // Decrease momentum before movement calculation (friction)
-    ball.momentum -= 0.1;
+    ball.momentum -= 0.05;
     if (ball.momentum <= 0) {
         ball.momentum = 0;  // Ensure momentum doesn't go negative
     }

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     const int screenHeight = 800;
     const std::string responseToRtt = "&";
     const std::string myRTT = "%";
-
+    bool rttCheck = true;
     InitWindow(screenWidth, screenHeight, "Player Class Example");
     SetTargetFPS(1000);
     ConnectWindow connectionPage(screenWidth);
@@ -60,14 +60,16 @@ int main(int argc, char* argv[]) {
                 rttCount++;
                 totalRTT += currentRTT;
                 averageRTT = (int)(totalRTT / rttCount);
-                updateFreq = (int)(0.9 * currentRTT + 0.1 * averageRTT);
+                updateFreq = (int)((0.9 * currentRTT + 0.1 * averageRTT)/2);
                 std::cout<<"a"<<updateFreq<<"\n";
+                rttCheck = true;
             }
-            if (elapsedRTT.count() >= 10000) {
+            if (elapsedRTT.count() >= 1000 && rttCheck) {
                 std::cout<<"sent"<<"\n";
                 stringToSend += myRTT;
                 lastSendRecvTimeRTT = now;
                 RTTGap = now;
+                rttCheck = false;
             }
             if (IsKeyDown(KEY_R)){
                 stringToSend += "@";
@@ -91,8 +93,11 @@ int main(int argc, char* argv[]) {
             for (int i = 0; i < extractSubstrings.size(); i++){
                 if (extractSubstrings[i][0] == '*'){
                     std::vector<std::string> ballCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");
+                    gameWindow.ballXPrev = gameWindow.ballX;
+                    gameWindow.ballYPrev = gameWindow.ballY;
                     gameWindow.ballX = std::stof(ballCoords[0]);
                     gameWindow.ballY = std::stof(ballCoords[1]);
+                    gameWindow.needsLerp = true;
                 }
                 if (extractSubstrings[i][0] == '$'){
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");

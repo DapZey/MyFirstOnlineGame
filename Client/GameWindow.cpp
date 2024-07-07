@@ -11,7 +11,7 @@
 #define MOVEMENT_SPEED 10
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 800
-#define PLAYER_OFFSET 600
+#define PLAYER_OFFSET 200
 #define RADIUS 30
 #define CAMERA_LERP_RATE 10
 #define BALL_RADIUS 15
@@ -21,7 +21,7 @@ GameWindow::GameWindow() {
     playerFollowCamera.target={float(SCREEN_WIDTH)/ 2,float (SCREEN_HEIGHT) / 2};
     playerFollowCamera.offset = (Vector2){ float(SCREEN_WIDTH)/ 2, float (SCREEN_HEIGHT + PLAYER_OFFSET) / 2 };
     playerFollowCamera.rotation = 0.0f;
-    playerFollowCamera.zoom = 1.0f;
+    playerFollowCamera.zoom = 0.70f;
 }
 enum InputAction {
     MOVE_LEFT,
@@ -65,9 +65,11 @@ void GameWindow::runGame() {
 
     // Capture and store input in the buffer
     captureInput();
-
     // Process input and update game logic for each tick
     for (int i = 0; i < ticksPassed; ++i) {
+        if (needsLerp){
+            lerpBall();
+        }
         processInput();
         updateGameLogic();
     }
@@ -79,7 +81,7 @@ void GameWindow::runGame() {
     DrawTexturePro(assets,{1753,489,902,1515},{0,0,SCREEN_HEIGHT,SCREEN_WIDTH},{0,0},0,WHITE);
     DrawTexturePro(assets,{3070,750,198,207},{x-RADIUS,y-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
     DrawTexturePro(assets,{3070,750,198,207},{(float)newPlayerx-RADIUS,(float)newPlayerY-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
-    DrawTexturePro(assets,{2901,785,111,111},{(float)ballX-BALL_RADIUS,(float)ballY-BALL_RADIUS,BALL_RADIUS*2,BALL_RADIUS*2},{0,0},0,WHITE);
+    DrawTexturePro(assets,{2901,785,111,111},{(float)ballXPrev-BALL_RADIUS,(float)ballYPrev-BALL_RADIUS,BALL_RADIUS*2,BALL_RADIUS*2},{0,0},0,WHITE);
     world.draw();
     if (username == "a"){
         DrawTextPro(GetFontDefault(),TextFormat("FPS: %i", GetFPS()),{505,700},{playerFollowCamera.target.x,playerFollowCamera.target.y},180,20,5,GREEN);
@@ -130,6 +132,17 @@ void GameWindow::captureInput() {
 }
 
 const float gameTickrate = 0.016;
+void GameWindow::lerpBall() {
+    float lerpFactor = accelerationFactor * gameTickrate;
+    Vector2 position = Utils::Vector2Lerp({(float)ballXPrev, (float)ballYPrev}, {(float)ballX, (float)ballY}, lerpFactor);
+    ballXPrev = position.x;
+    ballYPrev = position.y;
+    if (Utils::Vector2Distance({(float)ballXPrev, (float)ballYPrev}, {(float)ballX, (float)ballY}) < lerpThreshold) {
+        ballXPrev = ballX;
+        ballYPrev = ballY;
+        needsLerp = false;
+    }
+}
 void GameWindow::processInput() {
     Vector2 movementDirection = {0.0,0.0};
     for (auto input : inputBuffer) {

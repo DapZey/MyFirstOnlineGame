@@ -23,6 +23,8 @@ class GameWindow {
     void captureInput();
     Camera2D playerFollowCamera = {0};
 public:
+    bool needsLerp = false;
+    void lerpBall();
     Texture2D assets = LoadTexture("texture.png");
     World world;
     GameWindow();
@@ -34,6 +36,8 @@ public:
     float y = 660;
     int ballX = 387;
     int ballY = 505;
+    int ballXPrev = 387;
+    int ballYPrev = 505;
     int player1Score = 0;
     int player2Score = 0;
     void setUsername(std::string x);
