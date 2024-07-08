@@ -137,8 +137,6 @@ int main() {
                 stringToSendToCurrent += checkRTT;
                 clients[i].lastSendRecvTimeRTT = now;
                 clients[i].RTTGap = now;
-                std::string s ="?"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y)+"?";
-                stringToSendToCurrent +=s;
                 std::cout<<"1 second passed, sending rtt check\n";
             }
             if (containsChar(data,'%')) {
@@ -166,8 +164,10 @@ int main() {
                 Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
                 Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
                 std::cout<<"received coordinates\n";
-                if (Utils::Vector2Distance(coords, currentClientCoords) > 600 && clients[i].centered){
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 60 && clients[i].centered){
                     std::cout<<"coords invalid, rerouting player\n";
+                    std::string s ="?"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y)+"?";
+                    stringToSendToCurrent +=s;
                 }
                 else {
                     clients[i].centered = true;
