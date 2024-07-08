@@ -38,6 +38,7 @@ int main(int argc, char* argv[]) {
     float oldY = 0;
     std::string data;
     bool needToRespond = false;
+    bool needToSendCoords = false;
     while (!WindowShouldClose()) {
         if (foundConnection ==0){
             foundConnection = connectionPage.ShowPage();
@@ -74,17 +75,25 @@ int main(int argc, char* argv[]) {
             if (IsKeyDown(KEY_R)){
                 stringToSend += "@";
             }
+            if (IsKeyDown(KEY_P)){
+                gameWindow.x = 100;
+                gameWindow.y = 100;
+            }
             if (needToRespond){
                 stringToSend += responseToRtt;
                 needToRespond = false;
             }
             std::string coordinates = "*"+std::to_string((int)gameWindow.x) + "," + std::to_string((int)gameWindow.y);
             if (oldX != gameWindow.x || oldY != gameWindow.y){
+                needToSendCoords = true;
+            }
+            if (needToSendCoords){
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {
                     stringToSend += coordinates;
                     lastSendRecvTimeGeneral = now;
                     oldX = gameWindow.x;
                     oldY = gameWindow.y;
+                    needToSendCoords = false;
                 } else {
                     std::cout<<elapsedGeneral.count()<<"skipped"<<"\n";
                 }
@@ -101,8 +110,6 @@ int main(int argc, char* argv[]) {
                 }
                 if (extractSubstrings[i][0] == '$'){
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");
-                    gameWindow.newPlayerXPrev = gameWindow.newPlayerX;
-                    gameWindow.newPlayerYPrev = gameWindow.newPlayerY;
                     gameWindow.newPlayerX = std::stof(currentCoords[0]);
                     gameWindow.newPlayerY = std::stof(currentCoords[1]);
                     gameWindow.otherPlayerNeedsLerp = true;

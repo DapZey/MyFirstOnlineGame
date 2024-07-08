@@ -70,6 +70,9 @@ void GameWindow::runGame() {
         if (ballNeedsLerp){
             lerpBall();
         }
+        if (otherPlayerNeedsLerp){
+            lerpPlayer();
+        }
         processInput();
         updateGameLogic();
     }
@@ -80,7 +83,7 @@ void GameWindow::runGame() {
     BeginMode2D(playerFollowCamera);
     DrawTexturePro(assets,{1753,489,902,1515},{0,0,SCREEN_HEIGHT,SCREEN_WIDTH},{0,0},0,WHITE);
     DrawTexturePro(assets,{3070,750,198,207},{x-RADIUS,y-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
-    DrawTexturePro(assets, {3070,750,198,207}, {(float)newPlayerX - RADIUS, (float)newPlayerY - RADIUS, RADIUS * 2, RADIUS * 2}, {0, 0}, 0, WHITE);
+    DrawTexturePro(assets, {3070,750,198,207}, {(float)newPlayerXPrev - RADIUS, (float)newPlayerYPrev - RADIUS, RADIUS * 2, RADIUS * 2}, {0, 0}, 0, WHITE);
     DrawTexturePro(assets,{2901,785,111,111},{(float)ballXPrev-BALL_RADIUS,(float)ballYPrev-BALL_RADIUS,BALL_RADIUS*2,BALL_RADIUS*2},{0,0},0,WHITE);
     world.draw();
     if (username == "a"){
@@ -152,6 +155,7 @@ void GameWindow::lerpPlayer() {
         newPlayerXPrev = newPlayerX;
         newPlayerYPrev = newPlayerY;
         otherPlayerNeedsLerp = false;
+        std::cout<<"lerping complete\n";
     }
 }
 void GameWindow::processInput() {
