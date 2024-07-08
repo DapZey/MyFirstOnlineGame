@@ -23,13 +23,17 @@ class GameWindow {
     void captureInput();
     Camera2D playerFollowCamera = {0};
 public:
-    bool needsLerp = false;
+    bool ballNeedsLerp = false;
+    bool otherPlayerNeedsLerp = false;
     void lerpBall();
+    void lerpPlayer();
     Texture2D assets = LoadTexture("texture.png");
     World world;
     GameWindow();
-    int newPlayerx = 100;
+    int newPlayerX = 100;
     int newPlayerY = 200;
+    int newPlayerXPrev = 100;
+    int newPlayerYPrev = 200;
     Vector2 playerPos = {0,0};
     Vector2 direction = {0,0};
     float x = 220;

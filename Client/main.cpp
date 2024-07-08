@@ -97,12 +97,15 @@ int main(int argc, char* argv[]) {
                     gameWindow.ballYPrev = gameWindow.ballY;
                     gameWindow.ballX = std::stof(ballCoords[0]);
                     gameWindow.ballY = std::stof(ballCoords[1]);
-                    gameWindow.needsLerp = true;
+                    gameWindow.ballNeedsLerp = true;
                 }
                 if (extractSubstrings[i][0] == '$'){
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");
-                    gameWindow.newPlayerx = std::stoi(currentCoords[0]);
-                    gameWindow.newPlayerY = std::stoi(currentCoords[1]);
+                    gameWindow.newPlayerXPrev = gameWindow.newPlayerX;
+                    gameWindow.newPlayerYPrev = gameWindow.newPlayerY;
+                    gameWindow.newPlayerX = std::stof(currentCoords[0]);
+                    gameWindow.newPlayerY = std::stof(currentCoords[1]);
+                    gameWindow.otherPlayerNeedsLerp = true;
                 }
                 if (extractSubstrings[i][0] == '~'){
                     std::vector<std::string> currentCoords = Utils::splitstringbychar(extractSubstrings[i].substr(1), ",");

@@ -45,7 +45,7 @@ void GameWindow::setUsername(std::string text) {
         x = 100;
         y = 200;
         newPlayerY = 660;
-        newPlayerx = 220;
+        newPlayerX = 220;
     }
 }
 
@@ -67,7 +67,7 @@ void GameWindow::runGame() {
     captureInput();
     // Process input and update game logic for each tick
     for (int i = 0; i < ticksPassed; ++i) {
-        if (needsLerp){
+        if (ballNeedsLerp){
             lerpBall();
         }
         processInput();
@@ -80,7 +80,7 @@ void GameWindow::runGame() {
     BeginMode2D(playerFollowCamera);
     DrawTexturePro(assets,{1753,489,902,1515},{0,0,SCREEN_HEIGHT,SCREEN_WIDTH},{0,0},0,WHITE);
     DrawTexturePro(assets,{3070,750,198,207},{x-RADIUS,y-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
-    DrawTexturePro(assets,{3070,750,198,207},{(float)newPlayerx-RADIUS,(float)newPlayerY-RADIUS,RADIUS*2,RADIUS*2},{0,0},0,WHITE);
+    DrawTexturePro(assets, {3070,750,198,207}, {(float)newPlayerX - RADIUS, (float)newPlayerY - RADIUS, RADIUS * 2, RADIUS * 2}, {0, 0}, 0, WHITE);
     DrawTexturePro(assets,{2901,785,111,111},{(float)ballXPrev-BALL_RADIUS,(float)ballYPrev-BALL_RADIUS,BALL_RADIUS*2,BALL_RADIUS*2},{0,0},0,WHITE);
     world.draw();
     if (username == "a"){
@@ -140,7 +140,18 @@ void GameWindow::lerpBall() {
     if (Utils::Vector2Distance({(float)ballXPrev, (float)ballYPrev}, {(float)ballX, (float)ballY}) < lerpThreshold) {
         ballXPrev = ballX;
         ballYPrev = ballY;
-        needsLerp = false;
+        ballNeedsLerp = false;
+    }
+}
+void GameWindow::lerpPlayer() {
+    float lerpFactor = accelerationFactor * gameTickrate;
+    Vector2 position = Utils::Vector2Lerp({(float)newPlayerXPrev, (float)newPlayerYPrev}, {(float)newPlayerX, (float)newPlayerY}, lerpFactor);
+     newPlayerXPrev = position.x;
+     newPlayerYPrev = position.y;
+    if (Utils::Vector2Distance({(float)newPlayerXPrev, (float)newPlayerYPrev}, {(float)newPlayerX, (float)newPlayerY}) < lerpThreshold) {
+        newPlayerXPrev = newPlayerX;
+        newPlayerYPrev = newPlayerY;
+        otherPlayerNeedsLerp = false;
     }
 }
 void GameWindow::processInput() {
