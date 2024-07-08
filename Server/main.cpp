@@ -166,7 +166,7 @@ int main() {
                 Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
                 Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
                 std::cout<<"received coordinates\n";
-                if (Utils::Vector2Distance(coords, currentClientCoords) > (90) && clients[i].centered){
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 600 && clients[i].centered){
                     std::cout<<"coords invalid, rerouting player\n";
                 }
                 else {
@@ -219,7 +219,7 @@ int main() {
                     }
                 }
                 if (!stringToSendToOther.empty()){
-                    clients[i].lastSendRecvTimeGeneral = now;
+                    clients[otherClientIndex].lastSendRecvTimeGeneral = now;
                     int otherMessage = sendto(clients[otherClientIndex].socket, stringToSendToOther.c_str(), static_cast<int>(stringToSendToOther.size()) + 1, 0, (sockaddr*)&clients[otherClientIndex].address, clients[otherClientIndex].addressLength);
                     if (otherMessage == SOCKET_ERROR) {
                     }
