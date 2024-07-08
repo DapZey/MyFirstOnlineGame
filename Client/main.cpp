@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
                 rttCount++;
                 totalRTT += currentRTT;
                 averageRTT = (int)(totalRTT / rttCount);
-                updateFreq = (int)((0.9 * currentRTT + 0.1 * averageRTT)/2);
+                updateFreq = (int)(((0.9 * currentRTT + 0.1 * averageRTT) - averageRTT)/2);
                 std::cout<<"a"<<updateFreq<<"\n";
                 rttCheck = true;
             }
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
             if (IsKeyDown(KEY_R)){
                 stringToSend += "@";
             }
-            if (needToRespond == true){
+            if (needToRespond){
                 stringToSend += responseToRtt;
                 needToRespond = false;
             }
@@ -83,11 +83,11 @@ int main(int argc, char* argv[]) {
                 if ((elapsedGeneral.count() >= updateFreq + 1)) {
                     stringToSend += coordinates;
                     lastSendRecvTimeGeneral = now;
+                    oldX = gameWindow.x;
+                    oldY = gameWindow.y;
                 } else {
                     std::cout<<elapsedGeneral.count()<<"skipped"<<"\n";
                 }
-                oldX = gameWindow.x;
-                oldY = gameWindow.y;
             }
             std::vector<std::string> extractSubstrings = Utils::extractSubstrings(data);
             for (int i = 0; i < extractSubstrings.size(); i++){
