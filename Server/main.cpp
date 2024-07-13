@@ -158,13 +158,18 @@ int main() {
                 clients[i].updateFreq = (int)(((0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT)-clients[i].averageRTT)/2);
                 std::cout<<"received rtt check response, frequency is"<<clients[i].updateFreq<<"\n";
                 std::cout<<"average: "<<clients[i].averageRTT<<"\n";
+                if (clients[i].updateFreq < 0){
+                    clients[i].updateFreq = 0;
+                    clients[i].totalRTT = 0;
+                    clients[i].rttCount = 0;
+                }
             }
             if (containsChar(data,'*')){
                 std::vector<std::string> coordinates = splitstringbychar(data.substr(data.find('*')+1,data.size()),",");
                 Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
                 Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
                 std::cout<<"received coordinates\n";
-                if (Utils::Vector2Distance(coords, currentClientCoords) > 60 && clients[i].centered){
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 30 && clients[i].centered){
                     std::cout<<"coords invalid, rerouting player\n";
                     std::string s ="?"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y)+"?";
                     stringToSendToCurrent +=s;

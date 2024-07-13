@@ -64,6 +64,12 @@ int main(int argc, char* argv[]) {
                 updateFreq = (int)(((0.9 * currentRTT + 0.1 * averageRTT) - averageRTT)/2);
                 std::cout<<"a"<<updateFreq<<"\n";
                 rttCheck = true;
+                if (updateFreq < 0){
+                    updateFreq = 0;
+                    totalRTT = 0;
+                    rttCount = 0;
+                    std::cout<<"reset update freq\n";
+                }
             }
             if (elapsedRTT.count() >= 1000 && rttCheck) {
                 std::cout<<"sent"<<"\n";
