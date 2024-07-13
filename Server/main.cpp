@@ -180,6 +180,7 @@ int main() {
                     clients[i].y = std::stoi(coordinates[1]);
                     world.players[i].toMove = {std::stof(coordinates[0]),std::stof(coordinates[1])};
                     world.players[i].connected = true;
+                    world.players[i].moving = true;
                     clients[i].needToSendCoords = true;
                 }
 

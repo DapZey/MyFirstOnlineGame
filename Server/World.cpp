@@ -33,9 +33,9 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             if (Utils::CheckCollisionCircleLine({tempBall.x,tempBall.y}, 15,lines[j].start,lines[j].end)){
                 collisionDetected = true;
                 collisionType = wall;
-                ball.momentum += 2;
-                if (ball.momentum > 30){
-                    ball.momentum += 2;
+                ball.momentum += 1;
+                if (ball.momentum > 7){
+                    ball.momentum = 7;
                 }
                 break;}
         }
@@ -73,9 +73,9 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             if (Utils::CheckCollisionCircleLine({collisionPoint.x,tempBall.y}, 15,{lines[j].start},lines[j].end)){
                 collisionDetected = true;
                 collisionType = wall;
-                ball.momentum +=2;
-                if (ball.momentum > 30){
-                    ball.momentum = 30;
+                ball.momentum +=1;
+                if (ball.momentum > 7){
+                    ball.momentum = 7;
                 }
                 break;
             }
@@ -127,35 +127,43 @@ void World::run() {
 
 void World::movePlayer() {
     for (int i = 0; i < 2; i++){
+        if (players[i].moving){
+            players[i].momentum+=0.25;
+            if (players[i].momentum > 7){
+                players[i].momentum = 7;
+            }
+            players[i].moving = false;
+        }
+        players[i].momentum -= 0.025;
+        if (players[i].momentum < 0){
+            players[i].momentum = 0;
+        }
+        if (i == 0){
+            std::cout<<players[i].momentum<<"\n";
+        }
         players[i].xPrev = players[i].x;
         players[i].yPrev = players[i].y;
         players[i].x = players[i].toMove.x;
         players[i].y = players[i].toMove.y;
-        players[i].directionPrev = players[i].direction;
         players[i].direction = Utils::normalize({players[i].x - players[i].xPrev, players[i].y - players[i].yPrev});
         Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},30);
-        if (!Utils::checkEqualVectors(players[i].direction, {0,0})){
+        if (players[i].momentum > 0){
             collisionType = playerMoving;
         }
         else {
             collisionType = playerStationary;
         }
-        if (Utils::checkEqualVectors(players[i].direction, players[i].directionPrev) && collisionType == playerMoving){
-            players[i].momentum++;
-            if (players[i].momentum > 30){
-                players[i].momentum = 30;
-            }
-        }
-        else {
-                players[i].momentum-=2;
-                if (players[i].momentum < 15){
-                    players[i].momentum = 15;
-                }
-        }
         if (playerCollision.x != 0 || playerCollision.y != 0){
+            Vector2 directionFromPlayer = Utils::normalize({ball.x - players[i].x, ball.y - players[i].y});
+            float totalRadius = 30 + 15;
+            ball.x = players[i].x + directionFromPlayer.x * totalRadius;
+            ball.y = players[i].y + directionFromPlayer.y * totalRadius;
             ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({players[i].x,players[i].y},playerCollision),players[i].direction);
             if (collisionType == playerMoving){
-                ball.momentum = players[i].momentum;
+                if (players[i].momentum > ball.momentum){
+                    ball.momentum = players[i].momentum;
+                }
+                std::cout<<"momentum: "<<players[i].momentum<<"\n";
             }
         }
     }
@@ -163,7 +171,7 @@ void World::movePlayer() {
 
 void World::moveBall() {
     // Decrease momentum before movement calculation (friction)
-    ball.momentum -= 0.05;
+    ball.momentum -= 0.001;
     if (ball.momentum <= 0) {
         ball.momentum = 0;  // Ensure momentum doesn't go negative
     }

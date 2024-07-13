@@ -7,7 +7,7 @@
 #include "chrono"
 #include "cmath"
 #include "Utils.h"
-#define TICK_RATE_MS 16
+#define TICK_RATE_MS 3
 struct Ball{
     float x;
     float y;
@@ -27,6 +27,7 @@ struct Player{
     Vector2 toMove = {0,0};
     float momentum;
     int score = 0;
+    bool moving = false;
 };
 struct Border{
     int x;
