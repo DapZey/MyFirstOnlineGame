@@ -54,7 +54,7 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
             if (CheckCollisionCircleRec({tempBall.x,tempBall.y},15,border)) {
                 collisionDetected = true;
                 collisionType = wall;
-                if (tempBall.x > 345 && tempBall.x < 435){
+                if (tempBall.x > 325 && tempBall.x < 455){
                     if (tempBall.y > 500){
                         players[0].score++;
                     }
@@ -143,13 +143,13 @@ void World::movePlayer() {
         players[i].x = players[i].toMove.x;
         players[i].y = players[i].toMove.y;
         players[i].direction = Utils::normalize({players[i].x - players[i].xPrev, players[i].y - players[i].yPrev});
-        Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},30);
+        Vector2 playerCollision = Utils::CheckCollisionCircles({ball.x,ball.y},15,{players[i].x,players[i].y},42);
         if (players[i].momentum > 0){
             collisionType = playerMoving;
         }
         if (playerCollision.x != 0 || playerCollision.y != 0){
             Vector2 directionFromPlayer = Utils::normalize({ball.x - players[i].x, ball.y - players[i].y});
-            float totalRadius = 30 + 15;
+            float totalRadius = 42 + 15;
             ball.x = players[i].x + directionFromPlayer.x * totalRadius;
             ball.y = players[i].y + directionFromPlayer.y * totalRadius;
             ball.direction = Utils::CombineVectors(Utils::returnDirectionVector({players[i].x,players[i].y},playerCollision),players[i].direction);

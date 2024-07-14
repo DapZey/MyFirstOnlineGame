@@ -130,18 +130,18 @@ int main() {
 //                std::cout<<"no data\n";
             }
             else {
-                std::cout<< "received: "<<data<<"\n";
+//                std::cout<< "received: "<<data<<"\n";
             }
             if (elapsedRTT.count() >= 1000 && !clients[i].waiting && clients[i].centered) {
                 clients[i].waiting = true;
                 stringToSendToCurrent += checkRTT;
                 clients[i].lastSendRecvTimeRTT = now;
                 clients[i].RTTGap = now;
-                std::cout<<"1 second passed, sending rtt check\n";
+//                std::cout<<"1 second passed, sending rtt check\n";
             }
             if (containsChar(data,'%')) {
                 clients[i].needToRespond = true;
-                std::cout<<"received rtt queue from player\n";
+//                std::cout<<"received rtt queue from player\n";
             }
             if (containsChar(data,'@')){
                 world.ball.y = 200;
@@ -156,8 +156,8 @@ int main() {
                 clients[i].totalRTT += clients[i].currentRTT;
                 clients[i].averageRTT = (int)(clients[i].totalRTT / clients[i].rttCount);
                 clients[i].updateFreq = (int)(((0.9 * clients[i].currentRTT + 0.1 * clients[i].averageRTT)-clients[i].averageRTT)/2);
-                std::cout<<"received rtt check response, frequency is"<<clients[i].updateFreq<<"\n";
-                std::cout<<"average: "<<clients[i].averageRTT<<"\n";
+//                std::cout<<"received rtt check response, frequency is"<<clients[i].updateFreq<<"\n";
+//                std::cout<<"average: "<<clients[i].averageRTT<<"\n";
                 if (clients[i].updateFreq < 0){
                     clients[i].updateFreq = 0;
                     clients[i].totalRTT = 0;
@@ -168,9 +168,9 @@ int main() {
                 std::vector<std::string> coordinates = splitstringbychar(data.substr(data.find('*')+1,data.size()),",");
                 Vector2 coords = {std::stof(coordinates[0]), std::stof(coordinates[1])};
                 Vector2 currentClientCoords = {(float)clients[i].x, (float)clients[i].y};
-                std::cout<<"received coordinates\n";
-                if (Utils::Vector2Distance(coords, currentClientCoords) > 30 && clients[i].centered){
-                    std::cout<<"coords invalid, rerouting player\n";
+//                std::cout<<"received coordinates\n";
+                if (Utils::Vector2Distance(coords, currentClientCoords) > 12 && clients[i].centered){
+                    std::cout<<"coords invalid, rerouting player\ncoords are: "<<Utils::Vector2Distance(coords, currentClientCoords)<<"\n";
                     std::string s ="?"+ std::to_string(clients[i].x)+","+ std::to_string(clients[i].y)+"?";
                     stringToSendToCurrent +=s;
                 }
@@ -189,10 +189,10 @@ int main() {
                 std::string s = "$" + std::to_string(clients[i].x) + "," + std::to_string(clients[i].y) + "$";
                 stringToSendToOther += s;
                 clients[i].needToSendCoords = false;
-                std::cout << "applying and forwarding coords\n";
+//                std::cout << "applying and forwarding coords\n";
             }
             else if (elapsedGeneral.count() < clients[i].updateFreq&& clients[i].needToSendCoords){
-                std::cout<<"client freq too high\n";
+//                std::cout<<"client freq too high\n";
             }
             if (clients[i].oldBallY != world.ball.y || clients[i].oldBallX != world.ball.x) {
                 clients[i].oldBallY = world.ball.y;
@@ -216,7 +216,7 @@ int main() {
             if (clients[i].needToRespond){
                 stringToSendToCurrent += responseRTT;
                 clients[i].needToRespond = false;
-                std::cout<<"responded to rtt\n";
+//                std::cout<<"responded to rtt\n";
             }
                 if (!stringToSendToCurrent.empty()){
                     clients[i].lastSendRecvTimeGeneral = now;
