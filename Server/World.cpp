@@ -34,8 +34,8 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
                 collisionDetected = true;
                 collisionType = wall;
                 ball.momentum += 1;
-                if (ball.momentum > 5){
-                    ball.momentum = 5;
+                if (ball.momentum > 3){
+                    ball.momentum = 3;
                 }
                 break;}
         }
@@ -74,8 +74,8 @@ Vector2 World::findCollision(const Vector2 current, const Vector2 expected, int 
                 collisionDetected = true;
                 collisionType = wall;
                 ball.momentum +=1;
-                if (ball.momentum > 5){
-                    ball.momentum = 5;
+                if (ball.momentum > 3){
+                    ball.momentum = 3;
                 }
                 break;
             }
@@ -129,8 +129,8 @@ void World::movePlayer() {
     for (int i = 0; i < 2; i++){
         if (players[i].moving){
             players[i].momentum+=0.25;
-            if (players[i].momentum > 5){
-                players[i].momentum = 5;
+            if (players[i].momentum > 3){
+                players[i].momentum = 3;
             }
             players[i].moving = false;
         }
