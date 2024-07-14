@@ -38,7 +38,7 @@ Stuff is still a bit buggy if you dont run in a proper order:
 
    learn and utilize windows firewall api to handle creating/enabling automatically
 
-# TODOS
+# TODOS FOR V2
 
 1) learn and utilize windows firewall api to handle creating/enabling automatically
 
