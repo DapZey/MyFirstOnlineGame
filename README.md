@@ -20,17 +20,19 @@ On the client project raylib and winsock have some conflicts which can be solved
 
 Stuff is still a bit buggy if you dont run in a proper order:
 
-1) Run the server file
+1) Extract the zip
 
-2) Run the client file twice
+2) Run the server file
 
-3) in the first client (assuming server is on localhost) connect by typing in the textarea: 127.0.0.1/1/a
+3) Run the client file twice
 
-4) in the second client: 127.0.0.1/2/b
+4) in the first client (assuming server is on localhost) connect by typing in the textarea: 127.0.0.1/1/a
 
-5) if the ball gets stuck press r to reset it
+5) in the second client: 127.0.0.1/2/b
 
-6) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
+6) if the ball gets stuck press r to reset it
+
+7) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
 
    *note* To experiment with different PC's simultaniously make sure port forwarding is enabled and firewall is configured properly
 
