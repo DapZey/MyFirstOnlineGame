@@ -28,26 +28,20 @@ Stuff is still a bit buggy if you dont run in a proper order:
 
 4) in the second client: 127.0.0.1/2/b
 
-5) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
+5) if the ball gets stuck press r to reset it
+
+6) press escape to terminate the client program, type *stop* in the servers terminal to safely exit
 
    *note* To experiment with different PC's simultaniously make sure port forwarding is enabled and firewall is configured properly
 
-   Typically to do this you go -> control panel -> firewall -> advanced and then on both inbound and outbound: -> new rule -> port -> udp -> ports 50000-50001
-
-   TODO:
+   Typically to do this you go -> control panel -> firewall -> advanced and then on both inbound and outbound: -> new rule -> port -> udp -> ports 54000-54001
 
    learn and utilize windows firewall api to handle creating/enabling automatically
 
 # TODOS
 
-1) implement average response time so that frequency of messages isnt only dependant on past response time *DONE*
+1) learn and utilize windows firewall api to handle creating/enabling automatically
 
-2) move player based on vector (+1,-1) etc. instead of coordinates to have a consistant buffer size *DONE*
+2) automate connecting to a static proxy server instead of having to type in everything
 
-3) (maybe) experiment with a player count larger with two by utilizing fd_sets and/or multiple sockets on the same port
-
-4) add a "world environment" class to the server file and get started on the actual game loop (deltatime, sprites, severside animation and collision etc) *IN PROGRESS*
-
-5) Handle logic of server removing a disconnected client while maintaining user vector size
-
-6) server side movement smoothing/interpolation correction 
+3) create a proxy that handles connecting/disconnecting clients
