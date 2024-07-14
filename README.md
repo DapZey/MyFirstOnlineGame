@@ -1,4 +1,4 @@
-# MyFirstOnlineGame (2 players, non p2p)
+# MyFirstOnlineGame (2 players, non p2p) *V1 DONE*
 
 # Setup:
 
