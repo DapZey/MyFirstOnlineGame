@@ -136,15 +136,8 @@ void GameWindow::captureInput() {
 
 const float gameTickrate = 0.016;
 void GameWindow::lerpBall() {
-    float lerpFactor = accelerationFactor * gameTickrate;
-    Vector2 position = Utils::Vector2Lerp({(float)ballXPrev, (float)ballYPrev}, {(float)ballX, (float)ballY}, lerpFactor);
-    ballXPrev = position.x;
-    ballYPrev = position.y;
-    if (Utils::Vector2Distance({(float)ballXPrev, (float)ballYPrev}, {(float)ballX, (float)ballY}) < lerpThreshold) {
-        ballXPrev = ballX;
-        ballYPrev = ballY;
-        ballNeedsLerp = false;
-    }
+    ballXPrev = ballX;
+    ballYPrev = ballY;
 }
 void GameWindow::lerpPlayer() {
     float lerpFactor = accelerationFactor * gameTickrate;

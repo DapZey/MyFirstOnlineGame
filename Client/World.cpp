@@ -24,8 +24,8 @@ void World::draw() {
     for (int i =0; i < lines.size(); i++){
         DrawLine(lines[i].start.x,lines[i].start.y,lines[i].end.x,lines[i].end.y,BLUE);
     }
-    DrawRectangleRec({ 345, 0, 90, 10 },RED);
-    DrawRectangleRec({ 345, 1000, 90, 10 },RED);
+    DrawRectangleRec({ 325, 0, 130, 10 },RED);
+    DrawRectangleRec({ 325, 1000, 130, 10 },RED);
 }
 
 bool World::checkCollisionGeneral(Vector2 current, int radius) {
